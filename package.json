@@ -1,0 +1,25 @@
+{
+  "name": "actas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsvptf22/front-actas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsvptf22/front-actas/issues"
+  },
+  "homepage": "https://github.com/jsvptf22/front-actas#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "vue": "^2.6.10",
+    "vuex": "^3.1.2"
+  }
+}
