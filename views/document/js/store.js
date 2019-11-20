@@ -1,5 +1,7 @@
 const store = new Vuex.Store({
     state: {
+        apiRoute: "",
+        params: {},
         documentInformation: {
             modalTitle: "",
             documentId: 0,
@@ -14,6 +16,12 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        refreshParams(state, params) {
+            state.params = params;
+        },
+        generateApiRoute(state, baseUrl) {
+            state.apiRoute = baseUrl + "app/modules/actas/app/";
+        },
         refreshDocumentInformation(state, information) {
             state.documentInformation = {
                 ...state.documentInformation,
@@ -22,13 +30,21 @@ const store = new Vuex.Store({
         }
     },
     actions: {
+        refreshParams(context, data) {
+            context.commit("refreshParams", data);
+            context.commit("generateApiRoute", data.baseUrl);
+        },
         refreshDocumentInformation(context, information) {
             return new Promise((resolve, reject) => {
                 context.commit("refreshDocumentInformation", information);
                 context
                     .dispatch("saveDocument")
-                    .then(() => resolve())
-                    .catch(() => reject());
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch(() => {
+                        reject();
+                    });
             });
         },
         saveDocument(context) {
@@ -40,56 +56,69 @@ const store = new Vuex.Store({
                     return reject();
                 }
 
-                Axios.request({
-                    url: `${process.env.VUE_APP_MODULE_API_ROUTE}document/save`,
-                    method: "post",
-                    responseType: "json",
-                    data: context.state.documentInformation,
-                    headers: {
-                        Authorization: this._vm.$session.get("apiToken")
-                    }
-                })
-                    .then(response => {
-                        if (response.data.success) {
-                            let newData = {
-                                documentId: response.data.data.document.id,
-                                identificator:
-                                    response.data.data.document.identificator,
-                                initialDate:
-                                    response.data.data.document.initialDate,
-                                finalDate:
-                                    response.data.data.document.finalDate,
-                                topicList: [],
-                                topicListDescription: []
-                            };
-
-                            response.data.data.topics.forEach(t => {
-                                newData.topicList.push({
-                                    id: t.idact_document_topic,
-                                    label: t.name
-                                });
-
-                                if (t.description) {
-                                    newData.topicListDescription.push({
-                                        topic: t.idact_document_topic,
-                                        description: t.description
+                $.post(
+                    `${context.state.apiRoute}document/save.php`,
+                    {
+                        ...context.state.documentInformation,
+                        key: localStorage.getItem("key"),
+                        token: localStorage.getItem("token")
+                    },
+                    response => {
+                        if (response.success) {
+                            context
+                                .dispatch("updateAfterSave", response.data)
+                                .then(() => {
+                                    resolve();
+                                })
+                                .catch(() => {
+                                    top.notification({
+                                        type: "error",
+                                        message: "Error al actualizar los datos"
                                     });
-                                }
+                                    reject();
+                                });
+                        } else {
+                            top.notification({
+                                type: "error",
+                                message: response.message
                             });
 
-                            context.commit(
-                                "refreshDocumentInformation",
-                                newData
-                            );
-                            return resolve();
-                        } else {
-                            alert("Error al guardar");
+                            reject();
                         }
-                    })
-                    .catch(response => {
-                        alert(response.message);
-                        return reject();
+                    },
+                    "json"
+                );
+            });
+        },
+        updateAfterSave(context, data) {
+            return new Promise((resolve, reject) => {
+                /*let newData = {
+                    documentId: data.document.id,
+                    identificator: data.document.identificator,
+                    initialDate: data.document.initialDate,
+                    finalDate: data.document.finalDate,
+                    topicList: [],
+                    topicListDescription: []
+                };
+
+                data.topics.forEach(t => {
+                    newData.topicList.push({
+                        id: t.idact_document_topic,
+                        label: t.name
                     });
+
+                    if (t.description) {
+                        newData.topicListDescription.push({
+                            topic: t.idact_document_topic,
+                            description: t.description
+                        });
+                    }
+                });
+
+                console.log(newData, context.state.documentInformation);
+                context.commit("refreshDocumentInformation", newData);
+*/
+                resolve();
             });
         }
     }
