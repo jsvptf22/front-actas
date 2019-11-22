@@ -57,7 +57,7 @@ export default {
                     <button
                       type="button"
                       class="btn btn-secondary"
-                      v-on:click="showModal(4)"
+                      v-on:click="openTopicDescriptionModal"
                     >
                       Desarrollo de tema
                     </button>
@@ -245,48 +245,42 @@ export default {
   `,
     methods: {
         openSubjectModal() {
-            let _this = this;
-            top.topModal({
+            this.showModal({
                 url: `views/modules/actas/views/document/js/components/subject.php`,
-                params: {
-                    subject: _this.documentInformation.subject
-                },
-                title: "Asignación de asunto",
-                onSuccess: function(data) {
-                    _this.$store.dispatch("refreshDocumentInformation", data);
-                    top.closeTopModal();
-                }
+                title: "Asignación de asunto"
             });
         },
         openTopicsModal() {
-            let _this = this;
-            top.topModal({
+            this.showModal({
                 url: `views/modules/actas/views/document/js/components/topics.php`,
-                params: {
-                    topicList: _this.documentInformation.topicList
-                },
-                title: "Creación de temas",
-                onSuccess: function(data) {
-                    _this.$store.dispatch("refreshDocumentInformation", data);
-                    top.closeTopModal();
-                }
+                title: "Creación de temas"
             });
         },
-        showModal(type) {
-            switch (type) {
+        openTopicDescriptionModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/topic.php`,
+                title: "Descripción del tema"
+            });
+        },
+        showModal(options) {
+            let _this = this;
+
+            /*switch (type) {
                 case 1:
                     var file = "users.php";
-                    break;
-                case 3:
-                    var file = "topics.php";
-                    break;
-                case 4:
-                    var file = "topic.php";
                     break;
                 case 5:
                     var file = "roles.php";
                     break;
-            }
+            }*/
+
+            top.topModal({
+                ...options,
+                onSuccess: function(data) {
+                    _this.$store.dispatch("refreshDocumentInformation", data);
+                    top.closeTopModal();
+                }
+            });
         },
         sendDocument() {
             /*this.$http

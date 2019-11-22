@@ -43,7 +43,6 @@ include_once $rootPath . 'views/assets/librerias.php';
 <?= vue() ?>
 <script>
 	$(function() {
-		var request = JSON.parse('<?= json_encode($_REQUEST) ?>');
 		var app = new Vue({
 			el: '#topics_container',
 			data: function() {
@@ -67,7 +66,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 				}
 			},
 			created() {
-				this.topicList = request.topicList || [];
+				this.topicList = top.window.actDocumentData.topicList.slice();
 			}
 		});
 

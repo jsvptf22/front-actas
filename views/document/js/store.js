@@ -26,12 +26,20 @@ const store = new Vuex.Store({
                 ...state.documentInformation,
                 ...information
             };
+
+            top.window.actDocumentData = state.documentInformation;
         }
     },
     actions: {
         refreshParams(context, data) {
             context.commit("refreshParams", data);
             context.commit("generateApiRoute", data.baseUrl);
+
+            if (!data.documentId) {
+                context.dispatch("refreshDocumentInformation", {});
+            } else {
+                console.log("Pendiente por desarrollar el editar");
+            }
         },
         refreshDocumentInformation(context, information) {
             return new Promise((resolve, reject) => {
