@@ -12,7 +12,7 @@ while ($max_salida > 0) {
     $max_salida--;
 }
 
-include_once $rootPath . 'assets/librerias.php';
+include_once $rootPath . 'views/assets/librerias.php';
 
 $params = json_encode([
     'baseUrl' => $rootPath,

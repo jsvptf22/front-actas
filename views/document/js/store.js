@@ -3,8 +3,7 @@ const store = new Vuex.Store({
         apiRoute: "",
         params: {},
         documentInformation: {
-            modalTitle: "",
-            documentId: 0,
+            id: 0,
             identificator: 0,
             initialDate: "",
             finalDate: "",
@@ -37,27 +36,19 @@ const store = new Vuex.Store({
         refreshDocumentInformation(context, information) {
             return new Promise((resolve, reject) => {
                 context.commit("refreshDocumentInformation", information);
-                context
-                    .dispatch("saveDocument")
-                    .then(() => {
-                        resolve();
-                    })
-                    .catch(() => {
-                        reject();
-                    });
             });
-        },
-        saveDocument(context) {
+        }
+        /*saveDocument(context) {
             return new Promise((resolve, reject) => {
                 if (
                     !context.state.documentInformation.subject.length &&
-                    !context.state.documentInformation.documentId
+                    !context.state.documentInformation.id
                 ) {
                     return reject();
                 }
 
                 $.post(
-                    `${context.state.apiRoute}document/save.php`,
+                    `${context.state.apiRoute}documento/guardar.php`,
                     {
                         ...context.state.documentInformation,
                         key: localStorage.getItem("key"),
@@ -92,8 +83,8 @@ const store = new Vuex.Store({
         },
         updateAfterSave(context, data) {
             return new Promise((resolve, reject) => {
-                /*let newData = {
-                    documentId: data.document.id,
+                let newData = {
+                    id: data.document.id,
                     identificator: data.document.identificator,
                     initialDate: data.document.initialDate,
                     finalDate: data.document.finalDate,
@@ -117,10 +108,10 @@ const store = new Vuex.Store({
 
                 console.log(newData, context.state.documentInformation);
                 context.commit("refreshDocumentInformation", newData);
-*/
+
                 resolve();
             });
-        }
+        }*/
     }
 });
 

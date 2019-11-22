@@ -2,7 +2,7 @@
 	<div class="col-12">
 		<div class="form-group form-group-default">
 			<label for="subject">Asunto</label>
-			<input id="subject" type="text" class="form-control">
+			<input id="subject" type="text" class="form-control" value="<?= $_REQUEST['subject'] ?>">
 		</div>
 	</div>
 </div>

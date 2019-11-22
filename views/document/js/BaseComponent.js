@@ -43,14 +43,14 @@ export default {
                     <button
                       type="button"
                       class="btn btn-secondary"
-                      v-on:click="showModal(2)"
+                      v-on:click="openSubjectModal"
                     >
                       Crear asunto
                     </button>
                     <button
                       type="button"
                       class="btn btn-secondary"
-                      v-on:click="showModal(3)"
+                      v-on:click="openTopicsModal"
                     >
                       Crear temas
                     </button>
@@ -244,47 +244,52 @@ export default {
   </div>
   `,
     methods: {
-        showModal(type) {
-            switch (type) {
-                case 1:
-                    var file = "users.php";
-                    var title = "";
-                    break;
-                case 2:
-                    var file = "subject.php";
-                    var title = "Asignación de asunto";
-                    break;
-                case 3:
-                    var file = "topics.php";
-                    var title = "";
-                    break;
-                case 4:
-                    var file = "topic.php";
-                    var title = "";
-                    break;
-                case 5:
-                    var file = "roles.php";
-                    var title = "";
-                    break;
-            }
+        openSubjectModal() {
             let _this = this;
             top.topModal({
-                url: `views/modules/actas/views/document/js/components/${file}`,
-                title,
+                url: `views/modules/actas/views/document/js/components/subject.php`,
+                params: {
+                    subject: _this.documentInformation.subject
+                },
+                title: "Asignación de asunto",
                 onSuccess: function(data) {
                     _this.$store.dispatch("refreshDocumentInformation", data);
                     top.closeTopModal();
                 }
             });
         },
-        saveData() {
-            this.$store.dispatch(
-                "refreshDocumentInformation",
-                this.documentInformation
-            );
+        openTopicsModal() {
+            let _this = this;
+            top.topModal({
+                url: `views/modules/actas/views/document/js/components/topics.php`,
+                params: {
+                    topicList: _this.documentInformation.topicList
+                },
+                title: "Creación de temas",
+                onSuccess: function(data) {
+                    _this.$store.dispatch("refreshDocumentInformation", data);
+                    top.closeTopModal();
+                }
+            });
+        },
+        showModal(type) {
+            switch (type) {
+                case 1:
+                    var file = "users.php";
+                    break;
+                case 3:
+                    var file = "topics.php";
+                    break;
+                case 4:
+                    var file = "topic.php";
+                    break;
+                case 5:
+                    var file = "roles.php";
+                    break;
+            }
         },
         sendDocument() {
-            this.$http
+            /*this.$http
                 .request({
                     url: `${this.params.baseUrl}app/modules/actas/document/sendDocument`,
                     method: "post",
@@ -303,7 +308,7 @@ export default {
                 })
                 .catch(response => {
                     alert(response.message);
-                });
+                });*/
         },
         getTopicLabel(topicId) {
             return this.documentInformation.topicList.find(i => i.id == topicId)
