@@ -26,8 +26,6 @@ const store = new Vuex.Store({
                 ...state.documentInformation,
                 ...information
             };
-
-            top.window.actDocumentData = state.documentInformation;
         }
     },
     actions: {
@@ -122,5 +120,8 @@ const store = new Vuex.Store({
         }*/
     }
 });
+
+store.dispatch("refreshParams", $("#base_script").data("params"));
+top.window.actDocumentData = { ...store.state.documentInformation };
 
 export { store as default };

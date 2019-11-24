@@ -9,5 +9,3 @@ new Vue({
     render: h => h(BaseComponent),
     store
 }).$mount("#app");
-
-store.dispatch("refreshParams", $("#base_script").data("params"));

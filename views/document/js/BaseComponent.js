@@ -36,7 +36,7 @@ export default {
                     <button
                       type="button"
                       class="btn btn-secondary"
-                      v-on:click="showModal(1)"
+                      v-on:click="openUserModal"
                     >
                       Validar asistentes
                     </button>
@@ -244,6 +244,12 @@ export default {
   </div>
   `,
     methods: {
+        openUserModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/users.php`,
+                title: "Validación de asistencia"
+            });
+        },
         openSubjectModal() {
             this.showModal({
                 url: `views/modules/actas/views/document/js/components/subject.php`,
@@ -266,14 +272,14 @@ export default {
             let _this = this;
 
             /*switch (type) {
-                case 1:
-                    var file = "users.php";
-                    break;
+                
                 case 5:
                     var file = "roles.php";
                     break;
             }*/
-
+            top.window.actDocumentData = {
+                ...this.$store.state.documentInformation
+            };
             top.topModal({
                 ...options,
                 onSuccess: function(data) {
@@ -310,12 +316,12 @@ export default {
         },
         getAssistants() {
             return this.documentInformation.userList.filter(
-                u => u.externo == 0
+                u => u.external == 0
             );
         },
         getInvited() {
             return this.documentInformation.userList.filter(
-                u => u.externo == 1
+                u => u.external == 1
             );
         },
         getInitialDate() {
