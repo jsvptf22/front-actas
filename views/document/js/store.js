@@ -2,6 +2,7 @@ const store = new Vuex.Store({
     state: {
         apiRoute: "",
         params: {},
+        userNames: [],
         documentInformation: {
             id: 0,
             identificator: 0,
@@ -11,7 +12,8 @@ const store = new Vuex.Store({
             topicList: [],
             topicListDescription: [],
             userList: [],
-            roles: {}
+            roles: {},
+            tasks: []
         }
     },
     mutations: {

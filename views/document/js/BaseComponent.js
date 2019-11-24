@@ -1,25 +1,186 @@
-/**
- * pendiente agregar 
- * 
- * <style>
-        .template {
-        border: 1px solid #cacaca;
-        margin-bottom: 8px;
-        box-shadow: 2px 2px 8px #c6c6c6;
-        }
-
-        #template_parent {
-        height: 100vh;
-        overflow-y: auto;
-        }
-
-        .firm_square {
-        height: 150px;
-        }
-      </style> 
- */
 export default {
     name: "BaseComponent",
+    methods: {
+        openUserModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/users.php`,
+                title: "Validación de asistencia"
+            });
+        },
+        openSubjectModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/subject.php`,
+                title: "Asignación de asunto"
+            });
+        },
+        openTopicsModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/topics.php`,
+                title: "Creación de temas"
+            });
+        },
+        openTopicDescriptionModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/topic.php`,
+                title: "Descripción del tema"
+            });
+        },
+        openRoleModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/roles.php`,
+                title: "Asignación de roles"
+            });
+        },
+        showModal(options) {
+            top.window.actDocumentData = {
+                ...this.$store.state.documentInformation
+            };
+            top.topModal({
+                ...options,
+                onSuccess: data => {
+                    this.$store.dispatch("refreshDocumentInformation", data);
+                    top.closeTopModal();
+                }
+            });
+        },
+        openTaskModal(taskId = null) {
+            top.topModal({
+                url: `views/tareas/crear.php`,
+                params: {
+                    id: taskId
+                },
+                centerAlign: false,
+                size: "modal-lg",
+                title: "Tarea o Recordatorio",
+                buttons: {},
+                onSuccess: data => {
+                    let tasks = this.documentInformation.tasks;
+
+                    if (taskId) {
+                        let index = tasks.findIndex(t => t.id == data.id);
+                        tasks[index] = data;
+                    } else {
+                        tasks.push(data);
+                    }
+
+                    this.$store.dispatch("refreshDocumentInformation", {
+                        tasks: tasks
+                    });
+                }
+            });
+        },
+        sendDocument() {
+            /*this.$http
+                .request({
+                    url: `${this.params.baseUrl}app/modules/actas/document/sendDocument`,
+                    method: "post",
+                    responseType: "json",
+                    data: {
+                        documentId: this.documentInformation.documentId,
+                        route: process.env.VUE_APP_PAGE_APPROVE_ROUTE
+                    }
+                })
+                .then(response => {
+                    if (response.data.success) {
+                        alert("documento enviado para aprobación");
+                    } else {
+                        alert("Error al guardar");
+                    }
+                })
+                .catch(response => {
+                    alert(response.message);
+                });*/
+        },
+        getTopicLabel(topicId) {
+            return this.documentInformation.topicList.find(i => i.id == topicId)
+                .label;
+        },
+        getAssistants() {
+            return this.documentInformation.userList.filter(
+                u => +u.external == 0
+            );
+        },
+        getInvited() {
+            return this.documentInformation.userList.filter(
+                u => +u.external == 1
+            );
+        },
+        getInitialDate() {
+            if (!this.documentInformation.initialDate) {
+                return "";
+            }
+
+            let m = this.moment(
+                this.documentInformation.initialDate,
+                "YYYY-MM-DD HH:mm:ss"
+            );
+            return m.format("YYYY-MM-DD");
+        },
+        getInitialTime() {
+            if (!this.documentInformation.initialDate) {
+                return "";
+            }
+
+            let m = this.moment(
+                this.documentInformation.initialDate,
+                "YYYY-MM-DD HH:mm:ss"
+            );
+            return m.format("HH:mm:ss");
+        },
+        getFinaltime() {
+            if (!this.documentInformation.finalDate) {
+                return "";
+            }
+
+            let m = this.moment(
+                this.documentInformation.finalDate,
+                "YYYY-MM-DD HH:mm:ss"
+            );
+            return m.format("HH:mm:ss");
+        },
+        getUserName(userId) {
+            var index = this.userNames.findIndex(u => u.iduser == userId);
+
+            if (index == -1) {
+                let baseUrl = this.params.baseUrl;
+                $.ajax({
+                    url: `${baseUrl}app/funcionario/consulta_funcionario.php`,
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        key: localStorage.getItem("key"),
+                        token: localStorage.getItem("token"),
+                        type: "userInformation",
+                        userId: userId
+                    },
+                    async: false,
+                    success: response => {
+                        if (response.success) {
+                            this.userNames.push(response.data);
+                        } else {
+                            top.notification({
+                                type: "error",
+                                message: response.message
+                            });
+                        }
+                    }
+                });
+            }
+
+            index = this.userNames.findIndex(u => u.iduser == userId);
+            return this.userNames[index].name;
+        },
+        getTasksUsers(users) {
+            let names = [];
+
+            users.forEach(userId => {
+                names.push(this.getUserName(userId));
+            });
+
+            return names.join(", ", name);
+        }
+    },
+    computed: Vuex.mapState(["documentInformation", "userNames", "params"]),
     template: `<div class="container-fluid">
     <div class="row">
       <div class="col-12">
@@ -64,10 +225,17 @@ export default {
                     <button
                       type="button"
                       class="btn btn-secondary"
-                      v-on:click="showModal(5)"
+                      v-on:click="openRoleModal"
                     >
                       Asignación de roles
-                    </button>
+					</button>
+					<button
+						type="button"
+						class="btn btn-secondary"
+						v-on:click="openTaskModal()"
+					>
+						Responsabilidades
+					</button>
                   </div>
                 </div>
               </div>
@@ -142,7 +310,7 @@ export default {
                           <span
                             v-for="user of getAssistants()"
                             v-bind:key="user.id"
-                            >{{ user.nombre_completo }},&nbsp;&nbsp;</span
+                            >{{ user.name }},&nbsp;&nbsp;</span
                           >
                         </td>
                       </tr>
@@ -150,7 +318,7 @@ export default {
                         <td>
                           Invitados:
                           <span v-for="user of getInvited()" v-bind:key="user.id"
-                            >{{ user.nombre_completo }},&nbsp;&nbsp;</span
+                            >{{ user.name }},&nbsp;&nbsp;</span
                           >
                         </td>
                       </tr>
@@ -206,6 +374,37 @@ export default {
                       </tr>
                     </table>
                   </div>
+				</div>
+				<div class="row">
+                  <div class="col-12">
+                    <table class="table table-bordered">
+                      <tr>
+                        <td class="text-center">
+                          Responsabilidades
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+						<table v-if="documentInformation.tasks.length" class="table">	
+							<tr>
+								<td>Tarea</td>
+								<td>Responsable</td>
+								<td>Ver</td>
+							</tr>
+							<tr v-for="task of documentInformation.tasks">
+								<td>{{task.name}}</td>
+								<td>{{getTasksUsers(task.managers)}}</td>
+								<td>
+									<button class="btn" v-on:click="openTaskModal(task.id)">
+										<span class="fa fa-eye"></span>
+									</button>
+								</td>
+							</tr>
+                        </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-12">
@@ -214,13 +413,13 @@ export default {
                         <td class="firm_square">
                           Revisado por:
                           <span v-if="documentInformation.roles.secretary">{{
-                            documentInformation.roles.secretary.nombre_completo
+                            documentInformation.roles.secretary.name
                           }}</span>
                         </td>
                         <td class="firm_square">
                           Aprobado por:
                           <span v-if="documentInformation.roles.president">{{
-                            documentInformation.roles.president.nombre_completo
+                            documentInformation.roles.president.name
                           }}</span>
                         </td>
                       </tr>
@@ -240,123 +439,6 @@ export default {
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  `,
-    methods: {
-        openUserModal() {
-            this.showModal({
-                url: `views/modules/actas/views/document/js/components/users.php`,
-                title: "Validación de asistencia"
-            });
-        },
-        openSubjectModal() {
-            this.showModal({
-                url: `views/modules/actas/views/document/js/components/subject.php`,
-                title: "Asignación de asunto"
-            });
-        },
-        openTopicsModal() {
-            this.showModal({
-                url: `views/modules/actas/views/document/js/components/topics.php`,
-                title: "Creación de temas"
-            });
-        },
-        openTopicDescriptionModal() {
-            this.showModal({
-                url: `views/modules/actas/views/document/js/components/topic.php`,
-                title: "Descripción del tema"
-            });
-        },
-        showModal(options) {
-            let _this = this;
-
-            /*switch (type) {
-                
-                case 5:
-                    var file = "roles.php";
-                    break;
-            }*/
-            top.window.actDocumentData = {
-                ...this.$store.state.documentInformation
-            };
-            top.topModal({
-                ...options,
-                onSuccess: function(data) {
-                    _this.$store.dispatch("refreshDocumentInformation", data);
-                    top.closeTopModal();
-                }
-            });
-        },
-        sendDocument() {
-            /*this.$http
-                .request({
-                    url: `${this.params.baseUrl}app/modules/actas/document/sendDocument`,
-                    method: "post",
-                    responseType: "json",
-                    data: {
-                        documentId: this.documentInformation.documentId,
-                        route: process.env.VUE_APP_PAGE_APPROVE_ROUTE
-                    }
-                })
-                .then(response => {
-                    if (response.data.success) {
-                        alert("documento enviado para aprobación");
-                    } else {
-                        alert("Error al guardar");
-                    }
-                })
-                .catch(response => {
-                    alert(response.message);
-                });*/
-        },
-        getTopicLabel(topicId) {
-            return this.documentInformation.topicList.find(i => i.id == topicId)
-                .label;
-        },
-        getAssistants() {
-            return this.documentInformation.userList.filter(
-                u => u.external == 0
-            );
-        },
-        getInvited() {
-            return this.documentInformation.userList.filter(
-                u => u.external == 1
-            );
-        },
-        getInitialDate() {
-            if (!this.documentInformation.initialDate) {
-                return "";
-            }
-
-            let m = this.moment(
-                this.documentInformation.initialDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("YYYY-MM-DD");
-        },
-        getInitialTime() {
-            if (!this.documentInformation.initialDate) {
-                return "";
-            }
-
-            let m = this.moment(
-                this.documentInformation.initialDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("HH:mm:ss");
-        },
-        getFinaltime() {
-            if (!this.documentInformation.finalDate) {
-                return "";
-            }
-
-            let m = this.moment(
-                this.documentInformation.finalDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("HH:mm:ss");
-        }
-    },
-    computed: Vuex.mapState(["documentInformation"])
+    </div>	 
+  </div>`
 };

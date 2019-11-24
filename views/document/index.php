@@ -28,6 +28,23 @@ $params = json_encode([
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title>front</title>
+
+    <style>
+        .template {
+            border: 1px solid #cacaca;
+            margin-bottom: 8px;
+            box-shadow: 2px 2px 8px #c6c6c6;
+        }
+
+        #template_parent {
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .firm_square {
+            height: 150px;
+        }
+    </style>
 </head>
 
 <body>
