@@ -45,6 +45,39 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject) => {
                 context.commit("refreshDocumentInformation", information);
             });
+        },
+        checkRequiredData(context) {
+            return new Promise((resolve, reject) => {
+                let i = context.state.documentInformation;
+                console.log(
+                    i.topicList,
+                    i.topicList.length,
+                    i.userList,
+                    i.userList.length
+                );
+
+                try {
+                    if (!i.subject.length) {
+                        throw "Debe indicar el asunto";
+                    }
+
+                    if (!i.topicList.length) {
+                        throw "Debe indicar los temas a tratar";
+                    }
+
+                    if (!i.userList.length) {
+                        throw "Debe indicar los asistentes";
+                    }
+
+                    if (!Object.keys(i.roles).length) {
+                        throw "Debe asignar los roles";
+                    }
+
+                    return resolve();
+                } catch (error) {
+                    return reject(error);
+                }
+            });
         }
         /*saveDocument(context) {
             return new Promise((resolve, reject) => {

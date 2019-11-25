@@ -70,26 +70,39 @@ export default {
             });
         },
         sendDocument() {
-            /*this.$http
-                .request({
-                    url: `${this.params.baseUrl}app/modules/actas/document/sendDocument`,
-                    method: "post",
-                    responseType: "json",
-                    data: {
-                        documentId: this.documentInformation.documentId,
-                        route: process.env.VUE_APP_PAGE_APPROVE_ROUTE
-                    }
+            this.$store
+                .dispatch("checkRequiredData")
+                .then(() => {
+                    $.post(
+                        `${this.apiRoute}documento/guardar.php`,
+                        {
+                            key: localStorage.getItem("key"),
+                            token: localStorage.getItem("token"),
+                            documentInformation: JSON.stringify(
+                                this.documentInformation
+                            )
+                        },
+                        function(response) {
+                            if (response.success) {
+                                console.log(response);
+                            } else {
+                                top.notification({
+                                    type: "error",
+                                    message: response.message
+                                });
+                            }
+                        },
+                        "json"
+                    );
                 })
-                .then(response => {
-                    if (response.data.success) {
-                        alert("documento enviado para aprobación");
-                    } else {
-                        alert("Error al guardar");
-                    }
-                })
-                .catch(response => {
-                    alert(response.message);
-                });*/
+                .catch(message => {
+                    console.log("error");
+
+                    top.notification({
+                        type: "error",
+                        message: message
+                    });
+                });
         },
         getTopicLabel(topicId) {
             return this.documentInformation.topicList.find(i => i.id == topicId)
@@ -180,7 +193,12 @@ export default {
             return names.join(", ", name);
         }
     },
-    computed: Vuex.mapState(["documentInformation", "userNames", "params"]),
+    computed: Vuex.mapState([
+        "documentInformation",
+        "userNames",
+        "params",
+        "apiRoute"
+    ]),
     template: `<div class="container-fluid">
     <div class="row">
       <div class="col-12">
