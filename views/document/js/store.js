@@ -6,7 +6,7 @@ const store = new Vuex.Store({
         documentInformation: {
             id: 0,
             identificator: 0,
-            initialDate: "",
+            initialDate: moment().format("YYYY-MM-DD HH:mm:ss"),
             finalDate: "",
             subject: "",
             topicList: [],
@@ -49,12 +49,6 @@ const store = new Vuex.Store({
         checkRequiredData(context) {
             return new Promise((resolve, reject) => {
                 let i = context.state.documentInformation;
-                console.log(
-                    i.topicList,
-                    i.topicList.length,
-                    i.userList,
-                    i.userList.length
-                );
 
                 try {
                     if (!i.subject.length) {
@@ -78,49 +72,6 @@ const store = new Vuex.Store({
                     return reject(error);
                 }
             });
-        }
-        /*saveDocument(context) {
-            return new Promise((resolve, reject) => {
-                if (
-                    !context.state.documentInformation.subject.length &&
-                    !context.state.documentInformation.id
-                ) {
-                    return reject();
-                }
-
-                $.post(
-                    `${context.state.apiRoute}documento/guardar.php`,
-                    {
-                        ...context.state.documentInformation,
-                        key: localStorage.getItem("key"),
-                        token: localStorage.getItem("token")
-                    },
-                    response => {
-                        if (response.success) {
-                            context
-                                .dispatch("updateAfterSave", response.data)
-                                .then(() => {
-                                    resolve();
-                                })
-                                .catch(() => {
-                                    top.notification({
-                                        type: "error",
-                                        message: "Error al actualizar los datos"
-                                    });
-                                    reject();
-                                });
-                        } else {
-                            top.notification({
-                                type: "error",
-                                message: response.message
-                            });
-
-                            reject();
-                        }
-                    },
-                    "json"
-                );
-            });
         },
         updateAfterSave(context, data) {
             return new Promise((resolve, reject) => {
@@ -135,24 +86,23 @@ const store = new Vuex.Store({
 
                 data.topics.forEach(t => {
                     newData.topicList.push({
-                        id: t.idact_document_topic,
+                        id: t.id,
                         label: t.name
                     });
 
                     if (t.description) {
                         newData.topicListDescription.push({
-                            topic: t.idact_document_topic,
+                            topic: t.id,
                             description: t.description
                         });
                     }
                 });
 
-                console.log(newData, context.state.documentInformation);
                 context.commit("refreshDocumentInformation", newData);
 
                 resolve();
             });
-        }*/
+        }
     }
 });
 

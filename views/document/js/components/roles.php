@@ -48,7 +48,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 		});
 
 		$('#president_select,#secretary_select').select2({
-			data: documentInformation.userList,
+			data: getInternalUsers(documentInformation.userList),
 		});
 
 		if (documentInformation.roles.president) {
@@ -61,6 +61,10 @@ include_once $rootPath . 'views/assets/librerias.php';
 			$('#secretary_select')
 				.val(documentInformation.roles.secretary.id)
 				.trigger('change');
+		}
+
+		function getInternalUsers(users) {
+			return users.filter(u => +u.external == 0);
 		}
 	});
 </script>

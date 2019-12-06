@@ -70,6 +70,7 @@ export default {
             });
         },
         sendDocument() {
+            let _this = this;
             this.$store
                 .dispatch("checkRequiredData")
                 .then(() => {
@@ -84,7 +85,10 @@ export default {
                         },
                         function(response) {
                             if (response.success) {
-                                console.log(response);
+                                _this.$store.dispatch(
+                                    "updateAfterSave",
+                                    response.data
+                                );
                             } else {
                                 top.notification({
                                     type: "error",
