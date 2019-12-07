@@ -115,7 +115,7 @@ const store = new Vuex.Store({
                         });
                     }
                 });
-                console.log(data);
+
                 context.commit("refreshDocumentInformation", data);
 
                 resolve();

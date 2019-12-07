@@ -54,6 +54,11 @@ export default {
                 title: "Tarea o Recordatorio",
                 buttons: {},
                 onSuccess: data => {
+                    data = {
+                        id: data.id,
+                        name: data.name,
+                        managers: data.managers
+                    };
                     let tasks = this.documentInformation.tasks;
 
                     if (taskId) {
@@ -69,11 +74,13 @@ export default {
                 }
             });
         },
-        sendDocument() {
+        saveDocument() {
             let _this = this;
             this.$store
                 .dispatch("checkRequiredData")
                 .then(() => {
+                    let baseUrl = this.params.baseUrl;
+
                     $.post(
                         `${this.apiRoute}documento/guardar.php`,
                         {
@@ -89,6 +96,13 @@ export default {
                                     "updateDocumentInformation",
                                     response.data
                                 );
+
+                                let route = `${baseUrl}views/documento/index_acordeon.php?`;
+                                route += $.param({
+                                    documentId:
+                                        _this.documentInformation.documentId
+                                });
+                                window.location.href = route;
                             } else {
                                 top.notification({
                                     type: "error",
@@ -208,7 +222,7 @@ export default {
       <div class="col-12">
         <div id="component_container">
           <div class="row">
-            <div class="col-auto">
+            <div class="col-12 col-md-auto">
               <div class="row">
                 <div class="col-12">
                   <div
@@ -250,35 +264,25 @@ export default {
                       v-on:click="openRoleModal"
                     >
                       Asignación de roles
-					</button>
-					<button
-						type="button"
-						class="btn btn-secondary"
-						v-on:click="openTaskModal()"
-					>
-						Responsabilidades
-					</button>
-                  </div>
-                </div>
-              </div>
-              <div class="row pt-3">
-                <div class="col-12">
-                  <div
-                    class="btn-group-vertical mr-2"
-                    role="group"
-                    aria-label="First group"
-                  >
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      v-on:click="openTaskModal()"
+                    >
+                      Responsabilidades
+                    </button>
                     <button
                       class="btn btn-primary btn-block"
-                      v-on:click="sendDocument"
+                      v-on:click="saveDocument"
                     >
-                      Solicitar aprobación
+                      Guardar
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col" id="template_parent">
+            <div class="col-12 col-md" id="template_parent">
               <div class="template p-5">
                 <div class="row-fluid mb-5">
                   <div class="col-12 text-center p-3">
