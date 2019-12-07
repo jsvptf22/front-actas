@@ -86,7 +86,7 @@ export default {
                         function(response) {
                             if (response.success) {
                                 _this.$store.dispatch(
-                                    "updateAfterSave",
+                                    "updateDocumentInformation",
                                     response.data
                                 );
                             } else {

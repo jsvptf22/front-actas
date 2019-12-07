@@ -16,7 +16,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 
 $params = json_encode([
     'baseUrl' => $rootPath,
-]);
+] + $_REQUEST);
 
 ?>
 <!DOCTYPE html>

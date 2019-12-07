@@ -4,7 +4,7 @@ const store = new Vuex.Store({
         params: {},
         userNames: [],
         documentInformation: {
-            id: 0,
+            documentId: 0,
             identificator: 0,
             initialDate: moment().format("YYYY-MM-DD HH:mm:ss"),
             finalDate: "",
@@ -38,13 +38,37 @@ const store = new Vuex.Store({
             if (!data.documentId) {
                 context.dispatch("refreshDocumentInformation", {});
             } else {
-                console.log("Pendiente por desarrollar el editar");
+                context.dispatch("findDocumentInformation");
             }
         },
         refreshDocumentInformation(context, information) {
             return new Promise((resolve, reject) => {
                 context.commit("refreshDocumentInformation", information);
             });
+        },
+        findDocumentInformation(context) {
+            $.post(
+                `${context.state.apiRoute}documento/consulta_editor.php`,
+                {
+                    key: localStorage.getItem("key"),
+                    token: localStorage.getItem("token"),
+                    documentId: context.state.params.documentId
+                },
+                function(response) {
+                    if (response.success) {
+                        context.dispatch(
+                            "updateDocumentInformation",
+                            response.data
+                        );
+                    } else {
+                        top.notification({
+                            type: "error",
+                            message: response.message
+                        });
+                    }
+                },
+                "json"
+            );
         },
         checkRequiredData(context) {
             return new Promise((resolve, reject) => {
@@ -73,32 +97,26 @@ const store = new Vuex.Store({
                 }
             });
         },
-        updateAfterSave(context, data) {
+        updateDocumentInformation(context, data) {
             return new Promise((resolve, reject) => {
-                let newData = {
-                    id: data.document.id,
-                    identificator: data.document.identificator,
-                    initialDate: data.document.initialDate,
-                    finalDate: data.document.finalDate,
-                    topicList: [],
-                    topicListDescription: []
-                };
+                data.topicList = [];
+                data.topicListDescription = [];
 
                 data.topics.forEach(t => {
-                    newData.topicList.push({
+                    data.topicList.push({
                         id: t.id,
                         label: t.name
                     });
 
                     if (t.description) {
-                        newData.topicListDescription.push({
+                        data.topicListDescription.push({
                             topic: t.id,
                             description: t.description
                         });
                     }
                 });
-
-                context.commit("refreshDocumentInformation", newData);
+                console.log(data);
+                context.commit("refreshDocumentInformation", data);
 
                 resolve();
             });
