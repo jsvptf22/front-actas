@@ -23,7 +23,7 @@ $CamposFormato = CamposFormato::findByAttributes([
 <div class="row" id="users_container">
 	<div class="col-12">
 		<div class='form-group form-group-default form-group-default-select2'>
-			<label title='{$this->CamposFormato->ayuda}'>Asistentes</label>
+			<label>Asistentes</label>
 			<select class="full-width" id='user_select' multiple="multiple"></select>
 		</div>
 	</div>

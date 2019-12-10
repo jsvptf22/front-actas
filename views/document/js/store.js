@@ -35,7 +35,7 @@ const store = new Vuex.Store({
             context.commit("refreshParams", data);
             context.commit("generateApiRoute", data.baseUrl);
 
-            if (!data.documentId) {
+            if (!data.documentId && !data.planning) {
                 context.dispatch("refreshDocumentInformation", {});
             } else {
                 context.dispatch("findDocumentInformation");
@@ -52,7 +52,8 @@ const store = new Vuex.Store({
                 {
                     key: localStorage.getItem("key"),
                     token: localStorage.getItem("token"),
-                    documentId: context.state.params.documentId
+                    documentId: context.state.params.documentId,
+                    planning: context.state.params.planning
                 },
                 function(response) {
                     if (response.success) {
@@ -102,22 +103,23 @@ const store = new Vuex.Store({
                 data.topicList = [];
                 data.topicListDescription = [];
 
-                data.topics.forEach(t => {
-                    data.topicList.push({
-                        id: t.id,
-                        label: t.name
-                    });
-
-                    if (t.description) {
-                        data.topicListDescription.push({
-                            topic: t.id,
-                            description: t.description
+                if (data.topics) {
+                    data.topics.forEach(t => {
+                        data.topicList.push({
+                            id: t.id,
+                            label: t.name
                         });
-                    }
-                });
+
+                        if (t.description) {
+                            data.topicListDescription.push({
+                                topic: t.id,
+                                description: t.description
+                            });
+                        }
+                    });
+                }
 
                 context.commit("refreshDocumentInformation", data);
-
                 resolve();
             });
         }
