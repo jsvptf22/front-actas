@@ -37,9 +37,9 @@ $params = json_encode([
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" style="height: 100vh; overflow-y:auto">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h5>Crear evento</h5>
@@ -70,14 +70,14 @@ $params = json_encode([
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-12">
                         <h6>Próximos eventos</h6>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12" style="height: 100vh; overflow-y:auto" id="list"></div>
+                    <div class="col-12" id="list"></div>
                 </div>
             </div>
         </div>
