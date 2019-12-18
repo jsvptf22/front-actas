@@ -21,7 +21,7 @@ $(function() {
                 minimumInputLength: 3,
                 language: "es",
                 ajax: {
-                    url: `${params.baseUrl}app/modules/actas/app/funcionario/asistentes.php`,
+                    url: `${params.baseUrl}app/modules/back_actas/app/funcionario/asistentes.php`,
                     dataType: "json",
                     data: function(params) {
                         return {
@@ -92,7 +92,7 @@ $(function() {
                     });
 
                 $.post(
-                    `${params.baseUrl}app/modules/actas/app/planeacion/guardar.php`,
+                    `${params.baseUrl}app/modules/back_actas/app/planeacion/guardar.php`,
                     data,
                     function(response) {
                         if (response.success) {
@@ -155,7 +155,7 @@ $(function() {
 
     function findList() {
         $.post(
-            `${params.baseUrl}app/modules/actas/app/planeacion/listar.php`,
+            `${params.baseUrl}app/modules/back_actas/app/planeacion/listar.php`,
             {
                 key: localStorage.getItem("key"),
                 token: localStorage.getItem("token")

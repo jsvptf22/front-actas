@@ -4,6 +4,7 @@ const store = new Vuex.Store({
         params: {},
         userNames: [],
         documentInformation: {
+            id: 0,
             documentId: 0,
             identificator: 0,
             initialDate: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -21,7 +22,7 @@ const store = new Vuex.Store({
             state.params = params;
         },
         generateApiRoute(state, baseUrl) {
-            state.apiRoute = baseUrl + "app/modules/actas/app/";
+            state.apiRoute = baseUrl + "app/modules/back_actas/app/";
         },
         refreshDocumentInformation(state, information) {
             state.documentInformation = {
@@ -120,6 +121,7 @@ const store = new Vuex.Store({
                 }
 
                 context.commit("refreshDocumentInformation", data);
+                top.window.actDocumentData = { ...data };
                 resolve();
             });
         }
@@ -127,6 +129,5 @@ const store = new Vuex.Store({
 });
 
 store.dispatch("refreshParams", $("#base_script").data("params"));
-top.window.actDocumentData = { ...store.state.documentInformation };
 
 export { store as default };

@@ -47,7 +47,7 @@ $CamposFormato = CamposFormato::findByAttributes([
 			language: 'es',
 			data: selectedUsers,
 			ajax: {
-				url: `${realBaseUrl}app/modules/actas/app/funcionario/asistentes.php`,
+				url: `${realBaseUrl}app/modules/back_actas/app/funcionario/asistentes.php`,
 				dataType: 'json',
 				data: function(params) {
 					return {

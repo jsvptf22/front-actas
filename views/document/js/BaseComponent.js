@@ -31,6 +31,12 @@ export default {
                 title: "Asignación de roles"
             });
         },
+        openQuestionModal() {
+            this.showModal({
+                url: `views/modules/actas/views/document/js/components/questions.php`,
+                title: "Decisiones"
+            });
+        },
         showModal(options) {
             top.window.actDocumentData = {
                 ...this.$store.state.documentInformation
@@ -271,6 +277,13 @@ export default {
                       v-on:click="openTaskModal()"
                     >
                       Responsabilidades
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      v-on:click="openQuestionModal()"
+                    >
+                      Decisiones
                     </button>
                     <button
                       class="btn btn-primary btn-block"
