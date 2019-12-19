@@ -59,7 +59,7 @@ $params = json_encode([
                                 <label for="subject">Asunto</label>
                                 <input name="subject" id="subject" type="text" class="form-control">
                             </div>
-                            <div class='form-group form-group-default form-group-default-select2'>
+                            <div class='form-group form-group-default form-group-default-select2' id="assistants_container">
                                 <label>Asistentes</label>
                                 <select class="full-width" id='user_select' multiple="multiple"></select>
                             </div>

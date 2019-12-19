@@ -59,6 +59,19 @@ $(function() {
                     openModal();
                 }
             });
+
+        $("#assistants_container")
+            .off("click", ".select2-selection__choice")
+            .on("click", ".select2-selection__choice", function(e) {
+                if ($(e.target).hasClass("select2-selection__choice__remove")) {
+                    return;
+                }
+                let title = $(this).attr("title");
+                let item = $("#user_select")
+                    .select2("data")
+                    .find(i => i.text == title);
+                openModal(item, $(this));
+            });
     }
 
     function createEvent() {
@@ -133,16 +146,39 @@ $(function() {
         });
     }
 
-    function openModal() {
+    function openModal(item = 0, selectedNode = null) {
         $("#user_select").select2("close");
 
+        let user = $("#user_select")
+            .select2("data")
+            .find(u => u.id == item.id);
+
+        if (!+user.external) {
+            return;
+        }
+
         top.topModal({
-            url: `views/tercero/formularioDinamico.php`,
+            url: "views/tercero/formularioDinamico.php",
             params: {
-                fieldId: params.fieldId
+                fieldId: params.fieldId,
+                id: item.id
             },
             title: "Tercero",
-            onSuccess: data => {
+            buttons: {
+                success: {
+                    label: "Continuar",
+                    class: "btn btn-complete"
+                },
+                cancel: {
+                    label: "Cerrar",
+                    class: "btn btn-danger"
+                }
+            },
+            onSuccess: function(data) {
+                if (selectedNode) {
+                    selectedNode.find("span").trigger("click");
+                }
+
                 $("#user_select").select2("close");
                 var option = new Option(data.text, data.id, true, true);
                 $("#user_select")
