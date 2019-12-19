@@ -57,6 +57,7 @@ $params = json_encode([
     <?= theme() ?>
     <?= icons() ?>
     <?= moment() ?>
+    <?= fab() ?>
     <script id="base_script" data-params='<?= $params ?>' type="module" src="<?= $rootPath ?>views/modules/actas/views/document/js/entrie.js"></script>
 </body>
 
