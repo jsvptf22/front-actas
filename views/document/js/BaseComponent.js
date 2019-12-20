@@ -8,7 +8,7 @@ export default {
                         data: {
                             function: "openUserModal"
                         },
-                        tooltip: "Validar asistentes",
+                        tooltip: "Validar Asistencia",
                         visible: 1,
                         id: "openUserModal",
                         class: "small yellow action",
@@ -19,12 +19,28 @@ export default {
                         html: ""
                     }
                 },
+                openRoleModal: {
+                    button: {
+                        data: {
+                            function: "openRoleModal"
+                        },
+                        tooltip: "Elegir Presidente y Secretario(a)",
+                        visible: 1,
+                        id: "openRoleModal",
+                        class: "small yellow action",
+                        html: ""
+                    },
+                    icon: {
+                        class: "fa fa-user",
+                        html: ""
+                    }
+                },
                 openSubjectModal: {
                     button: {
                         data: {
                             function: "openSubjectModal"
                         },
-                        tooltip: "Crear asunto",
+                        tooltip: "Asunto del Acta",
                         visible: 1,
                         id: "openSubjectModal",
                         class: "small yellow action",
@@ -40,7 +56,7 @@ export default {
                         data: {
                             function: "openTopicsModal"
                         },
-                        tooltip: "Crear temas",
+                        tooltip: "Temas",
                         visible: 1,
                         id: "openTopicsModal",
                         class: "small yellow action",
@@ -56,7 +72,7 @@ export default {
                         data: {
                             function: "openTopicDescriptionModal"
                         },
-                        tooltip: "Desarrollo de tema",
+                        tooltip: "Desarrollo de Temas",
                         visible: 1,
                         id: "openTopicDescriptionModal",
                         class: "small yellow action",
@@ -67,28 +83,12 @@ export default {
                         html: ""
                     }
                 },
-                openRoleModal: {
-                    button: {
-                        data: {
-                            function: "openRoleModal"
-                        },
-                        tooltip: "Asignación de roles",
-                        visible: 1,
-                        id: "openRoleModal",
-                        class: "small yellow action",
-                        html: ""
-                    },
-                    icon: {
-                        class: "fa fa-user",
-                        html: ""
-                    }
-                },
                 openTaskModal: {
                     button: {
                         data: {
                             function: "openTaskModal"
                         },
-                        tooltip: "Responsabilidades",
+                        tooltip: "Compromisos",
                         visible: 1,
                         id: "openTaskModal",
                         class: "small yellow action",
@@ -104,7 +104,7 @@ export default {
                         data: {
                             function: "openQuestionModal"
                         },
-                        tooltip: "Decisiones",
+                        tooltip: "Tomar Decisiones",
                         visible: 1,
                         id: "openQuestionModal",
                         class: "small yellow action",
@@ -144,7 +144,7 @@ export default {
         openSubjectModal() {
             this.showModal({
                 url: `views/modules/actas/views/document/js/components/subject.php`,
-                title: "Asignación de asunto"
+                title: "Asunto del Acta"
             });
         },
         openTopicsModal() {
@@ -516,7 +516,7 @@ export default {
                         <table class="table table-bordered">
                             <tr>
                                 <td class="text-center">
-                                    Responsabilidades
+                                    Compromisos
                                 </td>
                             </tr>
                             <tr>
@@ -526,9 +526,9 @@ export default {
                                         class="table"
                                     >
                                         <tr>
-                                            <td>Tarea</td>
-                                            <td>Responsable</td>
-                                            <td>Ver</td>
+                                            <th class="text-center">Tarea</th>
+                                            <th class="text-center">Responsable</th>
+                                            <th class="text-center">Ver</th>
                                         </tr>
                                         <tr
                                             v-for="task of documentInformation.tasks"
@@ -559,7 +559,7 @@ export default {
                         <table class="table table-bordered">
                             <tr>
                                 <td class="firm_square">
-                                    Revisado por:
+                                    SECRETARIO:
                                     <span
                                         v-if="documentInformation.roles.secretary"
                                         >{{
@@ -568,7 +568,7 @@ export default {
                                     >
                                 </td>
                                 <td class="firm_square">
-                                    Aprobado por:
+                                    PRESIDENTE:
                                     <span
                                         v-if="documentInformation.roles.president"
                                         >{{

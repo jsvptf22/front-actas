@@ -37,6 +37,10 @@ $CamposFormato = CamposFormato::findByAttributes([
 		var selectedUsers = top.window.actDocumentData.userList;
 
 		$('#btn_success').on('click', function() {
+			top.notification({
+				type: 'success',
+				message: 'Asistentes actualizados'
+			});
 			top.successModalEvent({
 				userList: $("#user_select").select2('data')
 			})

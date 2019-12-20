@@ -22,7 +22,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 			<select class="form-control" id="topic_list"></select>
 		</div>
 		<div class="form-group form-group-default">
-			<label for>Desarrollo</label>
+			<label for>DESARROLLO DEL TEMA</label>
 			<textarea rows="10" class="form-control" v-model="description" v-bind:readonly="!value"></textarea>
 		</div>
 	</div>

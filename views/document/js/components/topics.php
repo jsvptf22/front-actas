@@ -27,15 +27,21 @@ include_once $rootPath . 'views/assets/librerias.php';
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-12">
-			<ul v-if="topicList.length">
-				<li v-for="topic of topicList" v-bind:key="topic.id" style="height:40px;list-style-type:none;">
-					{{topic.label}}
-					<span v-on:click="remove(topic.id)" class="text-danger float-left mr-2 f-20 cursor" title="eliminar">
-						<i class="fa fa-trash"></i>
-					</span>
-				</li>
-			</ul>
+		<div class="col-12" v-if="topicList.length">
+			<div v-for="topic of topicList" v-bind:key="topic.id" class="card mb-1">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-auto f-20 d-flex align-items-center pr-1 mr-1">
+							<i v-on:click="remove(topic.id)" class="text-danger cursor fa fa-times" title="eliminar"></i>
+						</div>
+						<div class="col">
+							<span>
+								{{topic.label}}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
