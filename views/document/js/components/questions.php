@@ -17,31 +17,68 @@ include_once $rootPath . 'views/assets/librerias.php';
 ?>
 <div class="row mx-0">
     <div class="col">
-        <div class='form-group form-group-default'>
-            <label>Pregunta</label>
-            <textarea class="form-control" name="question"></textarea>
+        <div class="form-group form-group-default">
+            <label>Sala</label>
+            <input type="text" class="form-control" id="room" readonly>
         </div>
     </div>
-    <div class="col-auto">
-        <button class="btn btn-complete" id="send_question">Publicar</button>
-    </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <table id="question_table"></table>
+<div id="question_container">
+    <div class="row mx-0">
+        <div class="col">
+            <div class='form-group form-group-default'>
+                <label>Pregunta</label>
+                <textarea class="form-control" name="question"></textarea>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-complete" id="send_question">Publicar</button>
+        </div>
+    </div>
+    <div class="row mx-0">
+        <div class="col-12">
+            <table id="question_table"></table>
+        </div>
     </div>
 </div>
 
+<?= socketIoClient() ?>
 <?= bootstrapTable() ?>
 <?= icons() ?>
 <script>
     $(function() {
+        var remoteServer = 'http://asker-jsv.herokuapp.com/';
+        //var remoteServer = 'http://localhost:3000/';
         var realBaseUrl = Session.getBaseUrl();
-        var selectedUsers = top.window.actDocumentData.userList;
+        var documentData = top.window.actDocumentData;
+        var room = documentData.questions.room || "";
+        var questions = [];
+        var socket = null;
+
+        (function init() {
+            if (!room.length) {
+                $("#question_container").hide();
+
+                name = generateRoomName(documentData.documentId);
+                $.post(`${remoteServer}api/room/${name}`, function(response) {
+                    if (response.success) {
+                        room = response.data.roomId;
+                        findRoom(room);
+                    } else {
+                        console.error(response.message);
+                    }
+                }, 'json');
+            } else {
+                findRoom(room);
+            }
+        })();
 
         $("#btn_success").on("click", function() {
             top.successModalEvent({
-                questions: []
+                questions: {
+                    room,
+                    items: questions
+                }
             });
         });
 
@@ -58,16 +95,11 @@ include_once $rootPath . 'views/assets/librerias.php';
             }
 
             $.post(
-                `${realBaseUrl}app/modules/back_actas/app/preguntas/crear.php`, {
-                    key: localStorage.getItem('key'),
-                    token: localStorage.getItem('token'),
-                    question: question,
-                    id: top.window.actDocumentData.id
-                },
+                `${remoteServer}api/room/${room}/questions/${question}`,
                 function(response) {
                     if (response.success) {
                         $("[name='question']").val('');
-                        $('#question_table').bootstrapTable('refresh');
+                        socket.emit("refreshQuestions", room);
                     } else {
                         top.notification({
                             type: 'error',
@@ -80,19 +112,10 @@ include_once $rootPath . 'views/assets/librerias.php';
         });
 
         $('#question_table').bootstrapTable({
-            url: `${realBaseUrl}app/modules/back_actas/app/preguntas/listado.php`,
             classes: 'table table-hover mt-0',
             theadClasses: 'thead-light',
-            showRefresh: true,
-            queryParams: function(queryParams) {
-                return $.extend({}, queryParams, {
-                    key: localStorage.getItem('key'),
-                    token: localStorage.getItem('token'),
-                    id: top.window.actDocumentData.id
-                });
-            },
             columns: [{
-                    field: 'question',
+                    field: 'label',
                     title: 'Pregunta'
                 },
                 {
@@ -104,9 +127,39 @@ include_once $rootPath . 'views/assets/librerias.php';
                     title: 'Rechazos'
                 }
             ],
-            onPostBody: function() {
-                $('.fa-sync').addClass('fa-refresh');
-            },
+            data: questions
         });
+
+        function generateRoomName(documentId) {
+            let str = [...Array(3)].map(i => (~~(Math.random() * 36)).toString(36)).join('')
+            return documentId + str;
+        }
+
+        function findRoom(room) {
+            $.get(`${remoteServer}api/room/${room}`, function(response) {
+                if (response.success) {
+                    $("#room").val(response.data.name);
+                    $("#question_container").show();
+                    openSocket(response.data._id);
+                } else {
+                    console.error(response.message);
+                }
+            }, 'json');
+
+        }
+
+        function openSocket(room) {
+            socket = io(remoteServer + "room");
+
+            socket.on("refreshQuestions", items => {
+                questions = items;
+                $('#question_table').bootstrapTable('refreshOptions', {
+                    data: questions
+                });
+            });
+
+            socket.emit("defineRoom", room);
+            socket.emit("refreshQuestions", room);
+        }
     });
 </script>

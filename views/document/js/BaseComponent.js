@@ -516,6 +516,42 @@ export default {
                         <table class="table table-bordered">
                             <tr>
                                 <td class="text-center">
+                                    Decisiones
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table
+                                        v-if="documentInformation.questions.items.length"
+                                        class="table"
+                                    >
+                                        <tr>
+                                            <th class="text-center">Pregunta</th>
+                                            <th class="text-center">Aprobación</th>
+                                            <th class="text-center">Rechazo</th>
+                                        </tr>
+                                        <tr
+                                            v-for="question of documentInformation.questions.items"
+                                        >
+                                            <td>{{question.label}}</td>
+                                            <td>
+                                                {{question.approve}}
+                                            </td>
+                                            <td>
+                                                {{question.reject}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="text-center">
                                     Compromisos
                                 </td>
                             </tr>

@@ -1,4 +1,7 @@
 <?php
+
+use Saia\controllers\CriptoController;
+
 $max_salida = 10;
 $rootPath = $ruta = '';
 

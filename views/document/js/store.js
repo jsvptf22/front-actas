@@ -14,7 +14,11 @@ const store = new Vuex.Store({
             topicListDescription: [],
             userList: [],
             roles: {},
-            tasks: []
+            tasks: [],
+            questions: {
+                room: "",
+                items: []
+            }
         }
     },
     mutations: {
