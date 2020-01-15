@@ -48,30 +48,11 @@ include_once $rootPath . 'views/assets/librerias.php';
 <script>
     $(function() {
         var remoteServer = 'http://asker-jsv.herokuapp.com/';
-        //var remoteServer = 'http://localhost:3000/';
-        var realBaseUrl = Session.getBaseUrl();
-        var documentData = top.window.actDocumentData;
-        var room = documentData.questions.room || "";
+        var room = top.window.actDocumentData.questions.room;
         var questions = [];
         var socket = null;
 
-        (function init() {
-            if (!room.length) {
-                $("#question_container").hide();
-
-                name = generateRoomName(documentData.documentId);
-                $.post(`${remoteServer}api/room/${name}`, function(response) {
-                    if (response.success) {
-                        room = response.data.roomId;
-                        findRoom(room);
-                    } else {
-                        console.error(response.message);
-                    }
-                }, 'json');
-            } else {
-                findRoom(room);
-            }
-        })();
+        findRoom(room);
 
         $("#btn_success").on("click", function() {
             top.successModalEvent({
