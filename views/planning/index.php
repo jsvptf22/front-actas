@@ -14,8 +14,8 @@ while ($max_salida > 0) {
 
 include_once $rootPath . 'views/assets/librerias.php';
 
-$Formato = Formato::findByAttributes(['nombre' => 'acta']);
-$CamposFormato = CamposFormato::findByAttributes([
+$Formato = Saia\models\formatos\Formato::findByAttributes(['nombre' => 'acta']);
+$CamposFormato = Saia\models\formatos\CamposFormato::findByAttributes([
     'nombre' => 'asistentes_externos'
 ]);
 
