@@ -93,6 +93,7 @@ $(function() {
                 }
             },
             submitHandler: function(form) {
+                $("#saveData,#spiner").toggleClass("d-none");
                 let params = $("#base_script").data("params");
                 let data = $("#planning_form").serialize();
                 data =
@@ -114,6 +115,7 @@ $(function() {
                                 type: "success"
                             });
 
+                            $("#saveData,#spiner").toggleClass("d-none");
                             $("#initialDate")
                                 .data("DateTimePicker")
                                 .clear();
@@ -146,14 +148,14 @@ $(function() {
         });
     }
 
-    function openModal(item = 0, selectedNode = null) {
+    function openModal(item = null, selectedNode = null) {
         $("#user_select").select2("close");
 
         let user = $("#user_select")
             .select2("data")
             .find(u => u.id == item.id);
 
-        if (!+user.external) {
+        if (user && !+user.external) {
             return;
         }
 
@@ -161,7 +163,7 @@ $(function() {
             url: "views/tercero/formularioDinamico.php",
             params: {
                 fieldId: params.fieldId,
-                id: item.id
+                id: item ? item.id : 0
             },
             title: "Tercero",
             buttons: {

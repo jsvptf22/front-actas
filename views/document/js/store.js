@@ -7,6 +7,7 @@ const store = new Vuex.Store({
             id: 0,
             documentId: 0,
             identificator: 0,
+            planning: 0,
             initialDate: moment().format("YYYY-MM-DD HH:mm:ss"),
             finalDate: "",
             subject: "",
@@ -28,11 +29,8 @@ const store = new Vuex.Store({
         generateApiRoute(state, baseUrl) {
             state.apiRoute = baseUrl + "app/modules/back_actas/app/";
         },
-        refreshDocumentInformation(state, information) {
-            state.documentInformation = {
-                ...state.documentInformation,
-                ...information
-            };
+        refreshDocumentInformation(state, data) {
+            state.documentInformation = data;
         }
     },
     actions: {
@@ -46,9 +44,19 @@ const store = new Vuex.Store({
                 context.dispatch("findDocumentInformation");
             }
         },
-        refreshDocumentInformation(context, information) {
+        refreshDocumentInformation(context, data) {
             return new Promise((resolve, reject) => {
-                context.commit("refreshDocumentInformation", information);
+                let newData = {
+                    ...context.state.documentInformation,
+                    ...data
+                };
+
+                context
+                    .dispatch("syncData", newData)
+                    .then(() => {
+                        context.commit("refreshDocumentInformation", newData);
+                    })
+                    .catch(r => console.error(r.message));
             });
         },
         findDocumentInformation(context) {
@@ -63,7 +71,7 @@ const store = new Vuex.Store({
                 function(response) {
                     if (response.success) {
                         context.dispatch(
-                            "updateDocumentInformation",
+                            "convertDocumentInformation",
                             response.data
                         );
                     } else {
@@ -75,6 +83,32 @@ const store = new Vuex.Store({
                 },
                 "json"
             );
+        },
+        convertDocumentInformation(context, data) {
+            return new Promise((resolve, reject) => {
+                data.topicList = [];
+                data.topicListDescription = [];
+
+                if (data.topics) {
+                    data.topics.forEach(t => {
+                        data.topicList.push({
+                            id: t.id,
+                            label: t.name
+                        });
+
+                        if (t.description) {
+                            data.topicListDescription.push({
+                                topic: t.id,
+                                description: t.description
+                            });
+                        }
+                    });
+                }
+
+                context.commit("refreshDocumentInformation", data);
+                top.window.actDocumentData = { ...data };
+                resolve();
+            });
         },
         checkRequiredData(context) {
             return new Promise((resolve, reject) => {
@@ -103,30 +137,22 @@ const store = new Vuex.Store({
                 }
             });
         },
-        updateDocumentInformation(context, data) {
+        syncData(context, data) {
             return new Promise((resolve, reject) => {
-                data.topicList = [];
-                data.topicListDescription = [];
-
-                if (data.topics) {
-                    data.topics.forEach(t => {
-                        data.topicList.push({
-                            id: t.id,
-                            label: t.name
-                        });
-
-                        if (t.description) {
-                            data.topicListDescription.push({
-                                topic: t.id,
-                                description: t.description
-                            });
-                        }
-                    });
-                }
-
-                context.commit("refreshDocumentInformation", data);
-                top.window.actDocumentData = { ...data };
-                resolve();
+                $.post(
+                    `${context.state.apiRoute}documento/guardar.php`,
+                    {
+                        key: localStorage.getItem("key"),
+                        token: localStorage.getItem("token"),
+                        documentInformation: JSON.stringify(data)
+                    },
+                    response => {
+                        return response.success
+                            ? resolve(response)
+                            : reject(response);
+                    },
+                    "json"
+                );
             });
         }
     }

@@ -215,47 +215,28 @@ export default {
             });
         },
         saveDocument() {
-            let _this = this;
             this.$store
                 .dispatch("checkRequiredData")
                 .then(() => {
                     let baseUrl = this.params.baseUrl;
 
-                    $.post(
-                        `${this.apiRoute}documento/guardar.php`,
-                        {
-                            key: localStorage.getItem("key"),
-                            token: localStorage.getItem("token"),
-                            documentInformation: JSON.stringify(
-                                this.documentInformation
-                            )
-                        },
-                        function(response) {
-                            if (response.success) {
-                                _this.$store.dispatch(
-                                    "updateDocumentInformation",
-                                    response.data
-                                );
-
-                                let route = `${baseUrl}views/documento/index_acordeon.php?`;
-                                route += $.param({
-                                    documentId:
-                                        _this.documentInformation.documentId
-                                });
-                                window.location.href = route;
-                            } else {
-                                top.notification({
-                                    type: "error",
-                                    message: response.message
-                                });
-                            }
-                        },
-                        "json"
-                    );
+                    this.$store
+                        .dispatch("syncData", this.documentInformation)
+                        .then(response => {
+                            let route = `${baseUrl}views/documento/index_acordeon.php?`;
+                            route += $.param({
+                                documentId: this.documentInformation.documentId
+                            });
+                            window.location.href = route;
+                        })
+                        .catch(response => {
+                            top.notification({
+                                type: "error",
+                                message: response.message
+                            });
+                        });
                 })
                 .catch(message => {
-                    console.log("error");
-
                     top.notification({
                         type: "error",
                         message: message

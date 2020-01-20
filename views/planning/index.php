@@ -67,6 +67,7 @@ $params = json_encode([
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-complete" id="saveData">Guardar</button>
+                        <div class="progress-circle-indeterminate d-none" id="spiner"></div>
                     </div>
                 </div>
             </div>
