@@ -18,6 +18,11 @@
     },
     "homepage": "https://github.com/jsvptf22/front-actas#readme",
     "devDependencies": {
+        "@babel/core": "^7.7.7",
+        "@babel/preset-env": "^7.7.7",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.0.6",
+        "babel-preset-env": "^1.7.0",
         "css-loader": "^3.4.2",
         "dotenv-webpack": "^1.7.0",
         "file-loader": "^5.0.2",
