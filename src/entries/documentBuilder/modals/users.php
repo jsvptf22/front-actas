@@ -14,11 +14,6 @@ while ($max_salida > 0) {
 
 include_once $rootPath . 'views/assets/librerias.php';
 
-$Formato = Formato::findByAttributes(['nombre' => 'acta']);
-$CamposFormato = CamposFormato::findByAttributes([
-	'nombre' => 'asistentes_externos'
-]);
-
 ?>
 <div class="row" id="users_container">
 	<div class="col-12">
@@ -35,6 +30,7 @@ $CamposFormato = CamposFormato::findByAttributes([
 	$(function() {
 		var realBaseUrl = Session.getBaseUrl();
 		var selectedUsers = top.window.actDocumentData.userList;
+		var fieldId = 0;
 
 		$('#btn_success').on('click', function() {
 			top.notification({
@@ -93,7 +89,31 @@ $CamposFormato = CamposFormato::findByAttributes([
 				idList.push(u.id);
 			});
 			$("#user_select").val(idList).trigger('change');
+
+			findFieldData();
 		})();
+
+		function findFieldData() {
+			$.post(
+				`${realBaseUrl}app/modules/back_actas/app/formato/busca_campo.php`, {
+					key: localStorage.getItem("key"),
+					token: localStorage.getItem("token"),
+					field: "asistentes_externos",
+					formatName: "acta"
+				},
+				response => {
+					if (response.success) {
+						fieldId = response.data.idcampos_formato;
+					} else {
+						top.notification({
+							type: "error",
+							message: response.message
+						});
+					}
+				},
+				"json"
+			);
+		}
 
 		function openModal() {
 			$("#user_select").select2('close');
@@ -102,7 +122,7 @@ $CamposFormato = CamposFormato::findByAttributes([
 			top.topModal({
 				url: `views/tercero/formularioDinamico.php`,
 				params: {
-					fieldId: '<?= $CamposFormato->getPK() ?>',
+					fieldId
 				},
 				title: 'Tercero',
 				onSuccess: function(data) {

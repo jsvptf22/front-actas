@@ -1,3 +1,10 @@
+import Vue from "vue";
+import Vuex from "vuex";
+import moment from "moment";
+Vue.prototype.moment = moment;
+
+Vue.use(Vuex);
+
 const store = new Vuex.Store({
     state: {
         apiRoute: "",
@@ -7,7 +14,7 @@ const store = new Vuex.Store({
             id: 0,
             documentId: 0,
             identificator: 0,
-            planning: 0,
+            fk_agendamiento_act: 0,
             initialDate: moment().format("YYYY-MM-DD HH:mm:ss"),
             finalDate: "",
             subject: "",
@@ -23,24 +30,31 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        refreshParams(state, params) {
-            state.params = params;
-        },
         generateApiRoute(state, baseUrl) {
-            state.apiRoute = baseUrl + "app/modules/back_actas/app/";
+            state.apiRoute = process.env.ABSOLUTE_ACTAS_API_ROUTE;
+        },
+        refreshParams(state, data) {
+            state.params = data;
         },
         refreshDocumentInformation(state, data) {
+            var url = new URL(window.location.href);
+            var finded =
+                url.searchParams.get("schedule") ||
+                url.searchParams.get("documentId");
+
+            if (!finded && data.documentId) {
+                window.location.href += "&documentId=" + data.documentId;
+            }
+
             state.documentInformation = data;
         }
     },
     actions: {
         refreshParams(context, data) {
+            context.commit("generateApiRoute");
             context.commit("refreshParams", data);
-            context.commit("generateApiRoute", data.baseUrl);
 
-            if (!data.documentId && !data.planning) {
-                context.dispatch("refreshDocumentInformation", {});
-            } else {
+            if (data.documentId || data.schedule) {
                 context.dispatch("findDocumentInformation");
             }
         },
@@ -53,8 +67,11 @@ const store = new Vuex.Store({
 
                 context
                     .dispatch("syncData", newData)
-                    .then(() => {
-                        context.commit("refreshDocumentInformation", newData);
+                    .then(response => {
+                        context.dispatch(
+                            "convertDocumentInformation",
+                            response.data
+                        );
                     })
                     .catch(r => console.error(r.message));
             });
@@ -66,7 +83,7 @@ const store = new Vuex.Store({
                     key: localStorage.getItem("key"),
                     token: localStorage.getItem("token"),
                     documentId: context.state.params.documentId,
-                    planning: context.state.params.planning
+                    schedule: context.state.params.schedule
                 },
                 function(response) {
                     if (response.success) {
@@ -138,6 +155,7 @@ const store = new Vuex.Store({
             });
         },
         syncData(context, data) {
+            console.log(data);
             return new Promise((resolve, reject) => {
                 $.post(
                     `${context.state.apiRoute}documento/guardar.php`,
@@ -157,7 +175,5 @@ const store = new Vuex.Store({
         }
     }
 });
-
-store.dispatch("refreshParams", $("#base_script").data("params"));
 
 export { store as default };

@@ -23,9 +23,9 @@ $(function() {
                 ajax: {
                     url: `${params.baseUrl}app/modules/back_actas/app/funcionario/asistentes.php`,
                     dataType: "json",
-                    data: function(params) {
+                    data: function(e) {
                         return {
-                            term: params.term,
+                            term: e.term,
                             key: localStorage.getItem("key"),
                             token: localStorage.getItem("token")
                         };
