@@ -47,7 +47,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 <?= icons() ?>
 <script>
     $(function() {
-        var remoteServer = 'http://asker-jsv.herokuapp.com/';
+        var remoteServer = 'https://asker-jsv.herokuapp.com/';
         var room = top.window.actDocumentData.questions.room;
         var questions = [];
         var socket = null;
