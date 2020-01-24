@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Crear evento</h5>
+            <h5>Agendar Reunión</h5>
         </div>
         <div class="card-body">
             <form id="planning_form">
@@ -9,7 +9,7 @@
                     class="form-group form-group-default input-group required date"
                 >
                     <div class="form-input-group">
-                        <label>Fecha:</label>
+                        <label>Fecha de Reunión:</label>
                         <input
                             name="initialDate"
                             type="text"
@@ -37,7 +37,7 @@
                     class="form-group form-group-default form-group-default-select2"
                     id="assistants_container"
                 >
-                    <label>Asistentes</label>
+                    <label>Agregar Invitados</label>
                     <select
                         class="full-width"
                         id="user_select"
@@ -48,7 +48,7 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-complete" id="saveData">
-                Guardar
+                Enviar
             </button>
             <div class="progress-circle-indeterminate d-none" id="spiner"></div>
         </div>
