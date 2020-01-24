@@ -154,10 +154,12 @@ export default {
                 if ($(e.target).hasClass("select2-selection__choice__remove")) {
                     return;
                 }
+
                 let title = $(this).attr("title");
                 let item = $("#user_select")
                     .select2("data")
                     .find(i => i.text == title);
+
                 openModal(item, $(this));
             });
 
@@ -231,12 +233,18 @@ export default {
         function openModal(item = null, selectedNode = null) {
             $("#user_select").select2("close");
 
-            let user = $("#user_select")
-                .select2("data")
-                .find(u => u.id == item.id);
+            if (item) {
+                let user = $("#user_select")
+                    .select2("data")
+                    .find(u => u.id == item.id);
 
-            if (user && !+user.external) {
-                return;
+                if (
+                    user &&
+                    user.hasOwnProperty("external") &&
+                    !+user.external
+                ) {
+                    return;
+                }
             }
 
             top.topModal({
