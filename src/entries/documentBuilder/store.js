@@ -155,7 +155,6 @@ const store = new Vuex.Store({
             });
         },
         syncData(context, data) {
-            console.log(data);
             return new Promise((resolve, reject) => {
                 $.post(
                     `${context.state.apiRoute}documento/guardar.php`,

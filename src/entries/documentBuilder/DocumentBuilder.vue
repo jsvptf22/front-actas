@@ -5,41 +5,32 @@
             <div class="col-12 col-md" id="template_parent">
                 <div class="template p-4 p-md-5">
                     <div class="row-fluid mb-3">
-                        <div class="col-12 text-center p-3">
-                            <p>
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Aut maiores libero officiis,
-                                maxime ut esse necessitatibus distinctio ad
-                                dolorem reprehenderit obcaecati ratione eum
-                                commodi! Modi possimus consequuntur aliquid
-                                rerum beatae!
-                            </p>
-                        </div>
+                        <div class="col-12 text-center p-3" id="header"></div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td>Acta N°</td>
+                                    <td class="bold">Acta N°</td>
                                     <td>
                                         {{ documentInformation.identificator }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Tema / Asunto</td>
+                                    <td class="bold">Tema / Asunto</td>
                                     <td colspan="3">
                                         {{ documentInformation.subject }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Inicio</td>
+                                    <td class="bold">Inicio</td>
                                     <td>
                                         {{ getInitialDate() }}
                                         {{ getInitialTime() }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Fin</td>
+                                    <td class="bold">Fin</td>
                                     <td>{{ getFinaltime() }}</td>
                                 </tr>
                             </table>
@@ -55,22 +46,30 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Asistentes:
-                                        <span
+                                        <span class="bold">Asistentes:</span>
+                                        <div
                                             v-for="user of getAssistants()"
                                             v-bind:key="user.id"
-                                            >{{ user.name }},&nbsp;&nbsp;</span
                                         >
+                                            <span class="ml-5">{{
+                                                user.name
+                                            }}</span>
+                                            <br />
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        Invitados:
-                                        <span
+                                        <span class="bold">Invitados:</span>
+                                        <div
                                             v-for="user of getInvited()"
                                             v-bind:key="user.id"
-                                            >{{ user.name }},&nbsp;&nbsp;</span
                                         >
+                                            <span class="ml-5">{{
+                                                user.name
+                                            }}</span>
+                                            <br />
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -80,7 +79,7 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center bold">
                                         Puntos a Tratar / Orden del día
                                     </td>
                                 </tr>
@@ -103,7 +102,7 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center bold">
                                         Puntos Tratados / Desarrollo
                                     </td>
                                 </tr>
@@ -132,7 +131,7 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center bold">
                                         Decisiones
                                     </td>
                                 </tr>
@@ -146,13 +145,13 @@
                                             class="table"
                                         >
                                             <tr>
-                                                <th class="text-center">
+                                                <th class="text-center bold">
                                                     Pregunta
                                                 </th>
-                                                <th class="text-center">
+                                                <th class="text-center bold">
                                                     Aprobación
                                                 </th>
-                                                <th class="text-center">
+                                                <th class="text-center bold">
                                                     Rechazo
                                                 </th>
                                             </tr>
@@ -180,7 +179,7 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center bold">
                                         Compromisos
                                     </td>
                                 </tr>
@@ -193,13 +192,15 @@
                                             class="table"
                                         >
                                             <tr>
-                                                <th class="text-center">
+                                                <th class="text-center bold">
                                                     Tarea
                                                 </th>
-                                                <th class="text-center">
+                                                <th class="text-center bold">
                                                     Responsable
                                                 </th>
-                                                <th class="text-center">Ver</th>
+                                                <th class="text-center bold">
+                                                    Ver
+                                                </th>
                                             </tr>
                                             <tr
                                                 v-for="(task,
@@ -239,8 +240,8 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="firm_square">
-                                        SECRETARIO:
+                                    <td>
+                                        <span class="bold">SECRETARIO:</span>
                                         <span
                                             v-if="
                                                 documentInformation.roles
@@ -252,8 +253,8 @@
                                             }}</span
                                         >
                                     </td>
-                                    <td class="firm_square">
-                                        PRESIDENTE:
+                                    <td>
+                                        <span class="bold">PRESIDENTE:</span>
                                         <span
                                             v-if="
                                                 documentInformation.roles
@@ -270,16 +271,7 @@
                         </div>
                     </div>
                     <div class="row-fluid mt-3">
-                        <div class="col-12 text-center p-3">
-                            <p>
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Aut maiores libero officiis,
-                                maxime ut esse necessitatibus distinctio ad
-                                dolorem reprehenderit obcaecati ratione eum
-                                commodi! Modi possimus consequuntur aliquid
-                                rerum beatae!
-                            </p>
-                        </div>
+                        <div class="col-12 text-center p-3" id="footer"></div>
                     </div>
                 </div>
             </div>
@@ -514,7 +506,6 @@ export default {
                     this.$store
                         .dispatch("syncData", this.documentInformation)
                         .then(response => {
-                            console.log(process.env.ABSOLUTE_SAIA_ROUTE);
                             let route = `${process.env.ABSOLUTE_SAIA_ROUTE}views/documento/index_acordeon.php?`;
                             route += $.param({
                                 documentId: this.documentInformation.documentId
@@ -586,7 +577,7 @@ export default {
             var index = this.userNames.findIndex(u => u.iduser == userId);
 
             if (index == -1) {
-                let baseUrl = this.params.baseUrl;
+                let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
                 $.ajax({
                     url: `${baseUrl}app/funcionario/consulta_funcionario.php`,
                     type: "POST",
@@ -646,6 +637,54 @@ export default {
                 let action = $(this).data("info").function;
                 instance[action]();
             });
+        },
+        findFormat() {
+            let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
+            $.ajax({
+                url: `${baseUrl}app/formato/consulta.php`,
+                type: "POST",
+                dataType: "json",
+                data: {
+                    key: localStorage.getItem("key"),
+                    token: localStorage.getItem("token"),
+                    name: "acta"
+                },
+                success: response => {
+                    if (response.success) {
+                        this.findHeader(response.data.encabezado);
+                        this.findHeader(response.data.pie_pagina, true);
+                    } else {
+                        top.notification({
+                            type: "error",
+                            message: response.message
+                        });
+                    }
+                }
+            });
+        },
+        findHeader(id, footer=false){
+            let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
+            $.ajax({
+                url: `${baseUrl}app/generador/obtener_contenido_encabezado.php`,
+                type: "POST",
+                dataType: "json",
+                data: {
+                    key: localStorage.getItem("key"),
+                    token: localStorage.getItem("token"),
+                    identificator: id
+                },
+                success: response => {
+                    if (response.success) {
+                        let selector = footer ? '#footer' : '#header';
+                        $(selector).html(response.data.content);
+                    } else {
+                        top.notification({
+                            type: "error",
+                            message: response.message
+                        });
+                    }
+                }
+            });
         }
     },
     mounted: function() {
@@ -658,6 +697,7 @@ export default {
             documentId
         });
         this.createFab();
+        this.findFormat();
     },
     computed: mapState([
         "documentInformation",
@@ -677,9 +717,5 @@ export default {
 #template_parent {
     height: 100vh;
     overflow-y: auto;
-}
-
-.firm_square {
-    height: 150px;
 }
 </style>
