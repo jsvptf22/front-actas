@@ -25,6 +25,15 @@
                     </div>
                 </div>
                 <div class="form-group form-group-default required">
+                    <label for="subject">Duración en minutos</label>
+                    <input
+                        name="duration"
+                        type="number"
+                        class="form-control"
+                        id="duration"
+                    />
+                </div>
+                <div class="form-group form-group-default required">
                     <label for="subject">Asunto</label>
                     <input
                         name="subject"
@@ -170,6 +179,9 @@ export default {
                 },
                 subject: {
                     required: true
+                },
+                duration: {
+                    required: true
                 }
             },
             messages: {
@@ -178,7 +190,8 @@ export default {
                 },
                 subject: {
                     required: "Campo requerido"
-                }
+                },
+                duration: {}
             },
             submitHandler: function(form) {
                 $("#saveData,#spiner").toggleClass("d-none");
@@ -207,7 +220,7 @@ export default {
                                 .data("DateTimePicker")
                                 .clear();
 
-                            $("#subject").val("");
+                            $("#subject,#duration").val("");
                             $("#user_select")
                                 .val(null)
                                 .trigger("change");
