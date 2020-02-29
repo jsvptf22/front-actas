@@ -3,9 +3,12 @@
         <div id="fab" class="pr-3 pb-3" style="z-index:1"></div>
         <div class="row p-2">
             <div class="col-12 col-md" id="template_parent">
-                <div class="template p-4 p-md-5">
+                <div class="template p-4 p-md-5 bg-white">
                     <div class="row-fluid mb-3">
-                        <div class="col-12 text-center p-3" id="header"></div>
+                        <div
+                            class="col-12 text-center py-3 px-0"
+                            id="header"
+                        ></div>
                     </div>
                     <div class="row">
                         <div class="col-12">
@@ -15,10 +18,18 @@
                                     <td>
                                         {{ documentInformation.identificator }}
                                     </td>
+                                    <td
+                                        v-if="this.documentInformation.qrUrl"
+                                        rowspan="4"
+                                        id="qr"
+                                        class="text-center align-middle"
+                                    >
+                                        <img :src="absoluteQrRoute" width="120" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="bold">Tema / Asunto</td>
-                                    <td colspan="3">
+                                    <td>
                                         {{ documentInformation.subject }}
                                     </td>
                                 </tr>
@@ -271,7 +282,10 @@
                         </div>
                     </div>
                     <div class="row-fluid mt-3">
-                        <div class="col-12 text-center p-3" id="footer"></div>
+                        <div
+                            class="col-12 text-center py-3 px-0"
+                            id="footer"
+                        ></div>
                     </div>
                 </div>
             </div>
@@ -638,45 +652,21 @@ export default {
                 instance[action]();
             });
         },
-        findFormat() {
-            let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
+        findHeaders() {
+            let apiRoute = process.env.ABSOLUTE_ACTAS_API_ROUTE;
             $.ajax({
-                url: `${baseUrl}app/formato/consulta.php`,
+                url: `${apiRoute}formato/obtener_ecabezados_estaticos.php`,
                 type: "POST",
                 dataType: "json",
                 data: {
                     key: localStorage.getItem("key"),
                     token: localStorage.getItem("token"),
-                    name: "acta"
+                    format: "acta"
                 },
                 success: response => {
                     if (response.success) {
-                        this.findHeader(response.data.encabezado);
-                        this.findHeader(response.data.pie_pagina, true);
-                    } else {
-                        top.notification({
-                            type: "error",
-                            message: response.message
-                        });
-                    }
-                }
-            });
-        },
-        findHeader(id, footer=false){
-            let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
-            $.ajax({
-                url: `${baseUrl}app/generador/obtener_contenido_encabezado.php`,
-                type: "POST",
-                dataType: "json",
-                data: {
-                    key: localStorage.getItem("key"),
-                    token: localStorage.getItem("token"),
-                    identificator: id
-                },
-                success: response => {
-                    if (response.success) {
-                        let selector = footer ? '#footer' : '#header';
-                        $(selector).html(response.data.content);
+                        $("#header").html(response.data.header);
+                        $("#footer").html(response.data.footer);
                     } else {
                         top.notification({
                             type: "error",
@@ -697,14 +687,16 @@ export default {
             documentId
         });
         this.createFab();
-        this.findFormat();
+        this.findHeaders();
     },
-    computed: mapState([
-        "documentInformation",
-        "userNames",
-        "params",
-        "apiRoute"
-    ])
+    computed: {
+        ...mapState(["documentInformation", "userNames", "params", "apiRoute"]),
+        absoluteQrRoute() {
+            return (
+                process.env.ABSOLUTE_SAIA_ROUTE + this.documentInformation.qrUrl
+            );
+        }
+    }
 };
 </script>
 <style>

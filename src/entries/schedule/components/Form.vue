@@ -191,7 +191,9 @@ export default {
                 subject: {
                     required: "Campo requerido"
                 },
-                duration: {}
+                duration: {
+                    required: "Campo requerido"
+                }
             },
             submitHandler: function(form) {
                 $("#saveData,#spiner").toggleClass("d-none");

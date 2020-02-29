@@ -26,7 +26,8 @@ const store = new Vuex.Store({
             questions: {
                 room: "",
                 items: []
-            }
+            },
+            qrUrl: ""
         }
     },
     mutations: {
