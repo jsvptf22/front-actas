@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
-Vue.prototype.moment = moment;
+import io from "socket.io-client";
 
+Vue.prototype.moment = moment;
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
+        socket: null,
         apiRoute: "",
         params: {},
         userNames: [],
@@ -48,16 +50,20 @@ const store = new Vuex.Store({
             }
 
             state.documentInformation = data;
+        },
+        refreshSocket(state, socket) {
+            state.socket = socket;
         }
     },
     actions: {
         refreshParams(context, data) {
             context.commit("generateApiRoute");
             context.commit("refreshParams", data);
-
-            if (data.documentId || data.schedule) {
-                context.dispatch("findDocumentInformation");
-            }
+            context.dispatch("openSocket").then(() => {
+                if (data.documentId || data.schedule) {
+                    context.dispatch("findDocumentInformation");
+                }
+            });
         },
         refreshDocumentInformation(context, data) {
             return new Promise((resolve, reject) => {
@@ -69,8 +75,13 @@ const store = new Vuex.Store({
                 context
                     .dispatch("syncData", newData)
                     .then(response => {
-                        context.dispatch(
-                            "convertDocumentInformation",
+                        context.state.socket.emit(
+                            "defineRoom",
+                            response.data.documentId
+                        );
+
+                        context.state.socket.emit(
+                            "refreshEditor",
                             response.data
                         );
                     })
@@ -88,8 +99,13 @@ const store = new Vuex.Store({
                 },
                 function(response) {
                     if (response.success) {
-                        context.dispatch(
-                            "convertDocumentInformation",
+                        context.state.socket.emit(
+                            "defineRoom",
+                            response.data.documentId
+                        );
+
+                        context.state.socket.emit(
+                            "refreshEditor",
                             response.data
                         );
                     } else {
@@ -172,6 +188,15 @@ const store = new Vuex.Store({
                     "json"
                 );
             });
+        },
+        openSocket(context) {
+            let socket = io(process.env.ACTAS_NODE_SERVER + "documentBuilder");
+
+            socket.on("refreshEditor", data => {
+                context.dispatch("convertDocumentInformation", data);
+            });
+
+            context.commit("refreshSocket", socket);
         }
     }
 });

@@ -2,7 +2,13 @@
     <div class="container-fluid">
         <div id="fab" class="pr-3 pb-3" style="z-index:1"></div>
         <div class="row p-2">
-            <div class="col-12 col-md" id="template_parent">
+            <div
+                v-bind:class="[
+                    viewer ? '' : 'template_parent',
+                    'col-12 col-md'
+                ]"
+                id="template_parent"
+            >
                 <div class="template p-4 p-md-5 bg-white">
                     <div class="row-fluid mb-3">
                         <div
@@ -24,7 +30,10 @@
                                         id="qr"
                                         class="text-center align-middle"
                                     >
-                                        <img :src="absoluteQrRoute" width="120" />
+                                        <img
+                                            :src="absoluteQrRoute"
+                                            width="90"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
@@ -51,7 +60,7 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center bold">
                                         Participantes
                                     </td>
                                 </tr>
@@ -142,45 +151,38 @@
                         <div class="col-12">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td class="text-center bold">
+                                    <td class="text-center bold" colspan="3">
                                         Decisiones
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr
+                                    v-if="
+                                        documentInformation.questions.items
+                                            .length
+                                    "
+                                >
+                                    <th class="text-center bold">
+                                        Pregunta
+                                    </th>
+                                    <th class="text-center bold">
+                                        Aprobación
+                                    </th>
+                                    <th class="text-center bold">
+                                        Rechazo
+                                    </th>
+                                </tr>
+                                <tr
+                                    v-for="(question,
+                                    index) of documentInformation.questions
+                                        .items"
+                                    v-bind:key="index"
+                                >
+                                    <td>{{ question.label }}</td>
                                     <td>
-                                        <table
-                                            v-if="
-                                                documentInformation.questions
-                                                    .items.length
-                                            "
-                                            class="table"
-                                        >
-                                            <tr>
-                                                <th class="text-center bold">
-                                                    Pregunta
-                                                </th>
-                                                <th class="text-center bold">
-                                                    Aprobación
-                                                </th>
-                                                <th class="text-center bold">
-                                                    Rechazo
-                                                </th>
-                                            </tr>
-                                            <tr
-                                                v-for="(question,
-                                                index) of documentInformation
-                                                    .questions.items"
-                                                v-bind:key="index"
-                                            >
-                                                <td>{{ question.label }}</td>
-                                                <td>
-                                                    {{ question.approve }}
-                                                </td>
-                                                <td>
-                                                    {{ question.reject }}
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        {{ question.approve }}
+                                    </td>
+                                    <td>
+                                        {{ question.reject }}
                                     </td>
                                 </tr>
                             </table>
@@ -299,6 +301,7 @@ import Fab from "GlobalAssets/theme/assets/plugins/fabjs/fab.js";
 
 export default {
     name: "DocumentBuilder",
+    props: ["viewer"],
     data: function() {
         return {
             buttons: {
@@ -629,6 +632,9 @@ export default {
             return names.join(", ", name);
         },
         createFab() {
+            if (this.viewer) {
+                return;
+            }
             let instance = this;
             new Fab({
                 selector: "#fab",
@@ -641,7 +647,7 @@ export default {
                     html: ""
                 },
                 // "top-left" || "top-right" || "bottom-left" || "bottom-right"
-                position: "bottom-right",
+                position: "bottom-left",
                 // "horizontal" || "vertical"
                 direction: "vertical",
                 buttons: this.buttons
@@ -706,7 +712,7 @@ export default {
     box-shadow: 2px 2px 8px #c6c6c6;
 }
 
-#template_parent {
+.template_parent {
     height: 100vh;
     overflow-y: auto;
 }

@@ -8,7 +8,8 @@ module.exports = env => {
     return {
         entry: {
             documentBuilder: "./src/entries/documentBuilder/entry.js",
-            schedule: "./src/entries/schedule/entry.js"
+            schedule: "./src/entries/schedule/entry.js",
+            qr: "./src/entries/qr/entry.js"
         },
         output: {
             path: path.resolve(__dirname, "dist/"),
@@ -71,6 +72,12 @@ module.exports = env => {
                 template: "./src/entries/schedule/template.html",
                 filename: "schedule/index.html",
                 chunks: ["schedule"],
+                hash: true
+            }),
+            new HtmlWebpackPlugin({
+                template: "./src/entries/qr/template.html",
+                filename: "qr/index.html",
+                chunks: ["qr"],
                 hash: true
             })
         ]
