@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "GlobalAssets/theme/pages/css/pages.min.css";
 import "GlobalAssets/theme/pages/js/pages.min.js";
 import "GlobalAssets/theme/assets/plugins/font-awesome/css/font-awesome.min.css";
+import "GlobalAssets/theme/assets/js/cerok_libraries/notifications/topNotification.js";
 
 Vue.config.productionTip = false;
 
