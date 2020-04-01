@@ -97,7 +97,7 @@ const store = new Vuex.Store({
                     documentId: context.state.params.documentId,
                     schedule: context.state.params.schedule
                 },
-                function(response) {
+                function (response) {
                     if (response.success) {
                         context.state.socket.emit(
                             "defineRoom",
@@ -140,7 +140,7 @@ const store = new Vuex.Store({
                 }
 
                 context.commit("refreshDocumentInformation", data);
-                top.window.actDocumentData = { ...data };
+                top.window.actDocumentData = {...data};
                 resolve();
             });
         },
@@ -189,6 +189,25 @@ const store = new Vuex.Store({
                 );
             });
         },
+        shareRoute(context, data) {
+            return new Promise((resolve, reject) => {
+                $.post(
+                    `${context.state.apiRoute}documento/enviar_enlace.php`,
+                    {
+                        key: localStorage.getItem("key"),
+                        token: localStorage.getItem("token"),
+                        documentId: context.state.documentInformation.documentId,
+                        data
+                    },
+                    response => {
+                        return response.success
+                            ? resolve(response)
+                            : reject(response);
+                    },
+                    "json"
+                );
+            });
+        },
         openSocket(context) {
             let socket = io(process.env.ACTAS_NODE_SERVER + "documentBuilder");
 
@@ -201,4 +220,4 @@ const store = new Vuex.Store({
     }
 });
 
-export { store as default };
+export {store as default};
