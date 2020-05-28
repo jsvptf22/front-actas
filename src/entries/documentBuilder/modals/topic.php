@@ -33,61 +33,57 @@ include_once $rootPath . 'views/assets/librerias.php';
 <?= select2() ?>
 
 <script>
-    $(function () {
+    $(function() {
         var editor = null;
         var app = new Vue({
             el: '#topic_container',
-            data: function () {
+            data: function() {
                 return {
+                    topics: [],
                     value: null,
-                    options: [],
                     description: "",
-                    topicListDescription: []
                 };
             },
             watch: {
-                value: function (val) {
-                    let item = this.topicListDescription.find(
-                        i => i.topic == val
+                value: function(val) {
+                    let topic = this.topics.find(
+                        i => i.id == val
                     );
-                    this.description = item ? item.description : "";
+                    this.description = topic ? topic.description : "";
                     editor.setData(this.description);
                 },
-                description: function (val) {
-                    console.log(11)
-                    let index = this.topicListDescription.findIndex(i => i.topic == this.value);
+                description: function(val) {
+                    let index = this.topics.findIndex(i => i.id == this.value);
 
                     if (index == -1) {
-                        index = this.topicListDescription.length;
+                        index = this.topics.length;
                     }
 
-                    this.topicListDescription[index] = {
-                        topic: this.value,
-                        description: val
-                    };
+                    let topic = this.topics[index];
+                    topic.description = val;
+                    this.topics[index] = topic;
                 }
             },
             created() {
-                this.options = top.window.actDocumentData.topicList.slice();
-                this.topicListDescription = top.window.actDocumentData.topicListDescription.slice();
+                this.topics = top.window.actDocumentData.topics.slice();
             }
         });
 
         CKEDITOR.replace('description');
         var editor = CKEDITOR.instances['description'];
-        editor.on('key', function (evt) {
+        editor.on('key', function(evt) {
             setTimeout(() => app.description = editor.getData(), 0);
         });
 
-        $('#btn_success').on('click', function () {
+        $('#btn_success').on('click', function() {
             top.successModalEvent({
-                topicListDescription: app._data.topicListDescription
+                topics: app._data.topics
             })
         });
 
         $('#topic_list').select2({
             data: convertOptions(),
-        }).on('change', function (e) {
+        }).on('change', function(e) {
             app._data.value = $(this).val();
         })
 
@@ -97,7 +93,7 @@ include_once $rootPath . 'views/assets/librerias.php';
                 'text': 'Seleccione..'
             }];
 
-            top.window.actDocumentData.topicList.forEach(t => {
+            top.window.actDocumentData.topics.forEach(t => {
                 data.push({
                     id: t.id,
                     text: t.label

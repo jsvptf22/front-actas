@@ -1,7 +1,7 @@
 <template>
     <div class="template p-4 p-md-5 bg-white">
-        <div class="row-fluid mb-3">
-            <div class="col-12 text-center py-3 px-0" id="header"></div>
+        <div class="row-fluid mb-3" v-if="documentInformation.headers">
+            <div class="col-12 text-center py-3 px-0" v-html="documentInformation.headers.header"></div>
         </div>
         <div class="row">
             <div class="col-12">
@@ -81,7 +81,7 @@
                         <td>
                             <ul>
                                 <li
-                                    v-for="topic of documentInformation.topicList"
+                                    v-for="topic of documentInformation.topics"
                                     v-bind:key="topic.id"
                                 >{{ topic.label }}</li>
                             </ul>
@@ -99,15 +99,8 @@
                     <tr>
                         <td>
                             <ul>
-                                <li
-                                    v-for="item of documentInformation.topicListDescription"
-                                    v-bind:key="item.id"
-                                >
-                                    <span>
-                                        {{
-                                        getTopicLabel(item.topic)
-                                        }}
-                                    </span>
+                                <li v-for="item of documentInformation.topics" v-bind:key="item.id">
+                                    <span>{{item.label}}</span>
                                     <br />
                                     <p v-html="item.description"></p>
                                 </li>
@@ -125,19 +118,14 @@
                             <td class="text-center bold" colspan="3">Decisiones</td>
                         </tr>
                     </thead>
-                    <tbody
-                        v-if="
-                            documentInformation.questions &&
-                            documentInformation.questions.items.length
-                        "
-                    >
+                    <tbody v-if="documentInformation.questions">
                         <tr>
                             <th class="text-center bold">Pregunta</th>
                             <th class="text-center bold">Aprobación</th>
                             <th class="text-center bold">Rechazo</th>
                         </tr>
                         <tr
-                            v-for="(question,index) of documentInformation.questions.items"
+                            v-for="(question,index) of documentInformation.questions"
                             v-bind:key="index"
                         >
                             <td>{{ question.label }}</td>
@@ -173,8 +161,8 @@
                                     v-for="(task,index) of documentInformation.tasks"
                                     v-bind:key="index"
                                 >
-                                    <td>{{ task.name }}</td>
-                                    <td>{{getTasksUsers(task.managers)}}</td>
+                                    <td>{{task.name}}</td>
+                                    <td>{{task.managers}}</td>
                                     <td>{{task.limitDate}}</td>
                                     <td>
                                         <button class="btn" v-on:click="openTaskModal(task.id)">
@@ -214,8 +202,8 @@
                 </table>
             </div>
         </div>
-        <div class="row-fluid mt-3">
-            <div class="col-12 text-center py-3 px-0" id="footer"></div>
+        <div class="row-fluid mt-3" v-if="documentInformation.headers">
+            <div class="col-12 text-center py-3 px-0" v-html="documentInformation.headers.footer"></div>
         </div>
     </div>
 </template>
@@ -227,7 +215,8 @@ export default {
     data: function() {
         return {
             documentInformation: {},
-            socket: null
+            socket: null,
+            userNames: []
         };
     },
     props: ["documentId"],
@@ -287,71 +276,6 @@ export default {
             );
             return m.format("HH:mm:ss");
         },
-        getUserName(userId) {
-            var index = this.userNames.findIndex(u => u.iduser == userId);
-
-            if (index == -1) {
-                let baseUrl = process.env.ABSOLUTE_SAIA_ROUTE;
-                $.ajax({
-                    url: `${baseUrl}app/funcionario/consulta_funcionario.php`,
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        key: localStorage.getItem("key"),
-                        token: localStorage.getItem("token"),
-                        type: "userInformation",
-                        userId: userId
-                    },
-                    async: false,
-                    success: response => {
-                        if (response.success) {
-                            this.userNames.push(response.data);
-                        } else {
-                            top.notification({
-                                type: "error",
-                                message: response.message
-                            });
-                        }
-                    }
-                });
-            }
-
-            index = this.userNames.findIndex(u => u.iduser == userId);
-            return this.userNames[index].name;
-        },
-        getTasksUsers(users) {
-            let names = [];
-
-            users.forEach(userId => {
-                names.push(this.getUserName(userId));
-            });
-
-            return names.join(", ", name);
-        },
-        findHeaders() {
-            let apiRoute = process.env.ABSOLUTE_ACTAS_API_ROUTE;
-            $.ajax({
-                url: `${apiRoute}formato/obtener_ecabezados_estaticos.php`,
-                type: "POST",
-                dataType: "json",
-                data: {
-                    key: localStorage.getItem("key"),
-                    token: localStorage.getItem("token"),
-                    format: "acta"
-                },
-                success: response => {
-                    if (response.success) {
-                        $("#header").html(response.data.header);
-                        $("#footer").html(response.data.footer);
-                    } else {
-                        top.notification({
-                            type: "error",
-                            message: response.message
-                        });
-                    }
-                }
-            });
-        },
         createSocket() {
             this.socket = io(process.env.ACTAS_NODE_SERVER + "meeting");
 
@@ -360,12 +284,11 @@ export default {
             });
         },
         syncData(documentId) {
-            this.socket.emit("defineRoom", documentId);
+            this.socket.emit("defineRoom", documentId + "-DocumentViewer");
             this.socket.emit("getData", documentId + "-Manager");
         }
     },
     mounted: function() {
-        this.findHeaders();
         this.createSocket();
         this.syncData(this.documentId);
     },

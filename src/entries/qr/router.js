@@ -11,7 +11,7 @@ var documentId = url.searchParams.get('documentId');
 
 const routes = [
     { path: '/document/:documentId', component: Viewer, props: true },
-    { path: '/questions/:roomId', component: Questions, props: true },
+    { path: '/questions/:documentId', component: Questions, props: true },
     { path: '/', redirect: '/document/' + documentId },
 ];
 

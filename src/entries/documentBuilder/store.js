@@ -23,11 +23,9 @@ const store = new Vuex.Store({
             userList: [],
             roles: {},
             tasks: [],
-            questions: {
-                room: '',
-                items: [],
-            },
             qrUrl: '',
+            headers: {},
+            questions: {},
         },
     },
     mutations: {
@@ -41,12 +39,17 @@ const store = new Vuex.Store({
             top.window.actDocumentData = { ...data };
             state.documentInformation = data;
 
-            let socketRoom = data.documentId;
-            state.socket.emit('defineRoom', socketRoom + '-Manager');
-            state.socket.emit('updateClients', {
-                room: socketRoom,
-                data: data,
-            });
+            if (data.documentId) {
+                state.socket.emit('defineRoom', data.documentId + '-Manager');
+                state.socket.emit('updateClients', {
+                    room: data.documentId + '-DocumentViewer',
+                    data: data,
+                });
+                state.socket.emit('updateClients', {
+                    room: data.documentId + '-QuestionViewer',
+                    data: data.questions,
+                });
+            }
         },
         refreshSocket(state, socket) {
             state.socket = socket;
@@ -62,7 +65,7 @@ const store = new Vuex.Store({
                         throw 'Debe indicar el asunto';
                     }
 
-                    if (!i.topicList.length) {
+                    if (!i.topics.length) {
                         throw 'Debe indicar los temas a tratar';
                     }
 
@@ -83,11 +86,14 @@ const store = new Vuex.Store({
         setRequest(context, data) {
             context.commit('generateApiRoute');
             context.commit('refreshParams', data);
-            context.dispatch('openSocket').then(() => {
-                if (data.documentId || data.schedule) {
-                    context.dispatch('findDocumentInformation');
-                }
-            });
+            context.commit(
+                'refreshDocumentInformation',
+                context.state.documentInformation
+            );
+
+            if (data.documentId || data.schedule) {
+                context.dispatch('findDocumentInformation');
+            }
         },
         findDocumentInformation(context) {
             $.post(
@@ -100,10 +106,7 @@ const store = new Vuex.Store({
                 },
                 function(response) {
                     if (response.success) {
-                        context.commit(
-                            'refreshDocumentInformation',
-                            response.data
-                        );
+                        context.dispatch('updateSocket', response.data);
                     } else {
                         top.notification({
                             type: 'error',
@@ -129,10 +132,7 @@ const store = new Vuex.Store({
                         documentInformation: JSON.stringify(newData),
                     },
                     (response) => {
-                        context.commit(
-                            'refreshDocumentInformation',
-                            response.data
-                        );
+                        context.dispatch('updateSocket', response.data);
                         return response.success
                             ? resolve(response)
                             : reject(response);
@@ -161,6 +161,17 @@ const store = new Vuex.Store({
                 );
             });
         },
+        updateSocket(context, data) {
+            if (!context.state.socket && data.documentId) {
+                context.dispatch('openSocket').then(() => {
+                    if (data.documentId || data.schedule) {
+                        context.commit('refreshDocumentInformation', data);
+                    }
+                });
+            } else {
+                context.commit('refreshDocumentInformation', data);
+            }
+        },
         openSocket(context) {
             let socket = io(process.env.ACTAS_NODE_SERVER + 'meeting');
 
@@ -169,6 +180,23 @@ const store = new Vuex.Store({
                     'refreshDocumentInformation',
                     context.state.documentInformation
                 );
+            });
+
+            socket.on('addVote', (data) => {
+                let questions = context.state.documentInformation.questions;
+                let index = questions.findIndex(
+                    (q) => +q.idact_question == data.question
+                );
+                let question = questions[index];
+
+                if (+data.action) {
+                    ++question.approve;
+                } else {
+                    ++question.reject;
+                }
+
+                questions[index] = question;
+                context.dispatch('syncData', { questions });
             });
 
             context.commit('refreshSocket', socket);

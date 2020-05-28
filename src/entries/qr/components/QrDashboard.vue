@@ -2,37 +2,26 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <ul
-                    class="nav nav-pills nav-fill mb-3"
-                    id="pills-tab"
-                    role="tablist"
-                >
+                <ul class="nav nav-pills nav-fill mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item">
                         <a
-                            v-on:click="openTab('/document/1')"
+                            v-on:click="openTab('/document/')"
                             class="nav-link active"
                             data-toggle="pill"
                             role="tab"
                             aria-controls="pills-home"
                             aria-selected="true"
-                            >Documento</a
-                        >
+                        >Documento</a>
                     </li>
                     <li class="nav-item">
                         <a
-                            v-on:click="
-                                openTab(
-                                    '/questions/' +
-                                        documentInformation.questions.room
-                                )
-                            "
+                            v-on:click="openTab('/questions/')"
                             class="nav-link"
                             data-toggle="pill"
                             role="tab"
                             aria-controls="pills-profile"
                             aria-selected="false"
-                            >Decisiones</a
-                        >
+                        >Decisiones</a>
                     </li>
                 </ul>
                 <hr />
@@ -49,11 +38,20 @@
 import { mapState } from "vuex";
 export default {
     name: "QrDashboard",
+    data: function() {
+        return {
+            documentId: 0
+        };
+    },
     computed: mapState(["documentInformation"]),
     methods: {
         openTab(route) {
-            this.$router.push(route);
+            this.$router.push(route + this.documentId);
         }
+    },
+    mounted: function() {
+        var url = new URL(window.location.href);
+        this.documentId = url.searchParams.get("documentId");
     }
 };
 </script>

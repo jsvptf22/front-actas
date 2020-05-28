@@ -72,13 +72,13 @@ include_once $rootPath . 'views/assets/librerias.php';
 				}
 			},
 			created() {
-				this.topicList = top.window.actDocumentData.topicList.slice();
+				this.topicList = top.window.actDocumentData.topics.slice();
 			}
 		});
 
 		$('#btn_success').on('click', function() {
 			top.successModalEvent({
-				topicList: app._data.topicList
+				topics: app._data.topicList
 			})
 		});
 	})

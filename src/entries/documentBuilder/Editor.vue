@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="row border p-2">
-            <div class="col-12 col-md">
+            <div class="col-12 col-md template_parent">
                 <Viewer v-bind:documentId="documentInformation.documentId"></Viewer>
             </div>
         </div>
@@ -216,3 +216,9 @@ export default {
     }
 };
 </script>
+<style>
+.template_parent {
+    height: 100vh;
+    overflow-y: auto;
+}
+</style>

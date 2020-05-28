@@ -10,25 +10,21 @@
                             <th class="text-center bold">Rechazo</th>
                             <th class="text-center bold">Opciones</th>
                         </tr>
-                        <tr v-for="question in questions" :key="question._id">
+                        <tr v-for="question in questions" :key="question.idact_question">
                             <td class="text-center">{{ question.label }}</td>
                             <td class="text-center">{{ question.approve }}</td>
                             <td class="text-center">{{ question.reject }}</td>
                             <td class="text-center">
                                 <button
-                                    v-if="canShow(question._id)"
-                                    v-on:click="vote(1, question._id)"
+                                    v-if="canShow(question.idact_question)"
+                                    v-on:click="vote(1, question.idact_question)"
                                     class="btn btn-sm btn-block btn-complete"
-                                >
-                                    Aprobar
-                                </button>
+                                >Aprobar</button>
                                 <button
-                                    v-if="canShow(question._id)"
-                                    v-on:click="vote(0, question._id)"
+                                    v-if="canShow(question.idact_question)"
+                                    v-on:click="vote(0, question.idact_question)"
                                     class="btn btn-sm btn-block btn-danger"
-                                >
-                                    Rechazar
-                                </button>
+                                >Rechazar</button>
                             </td>
                         </tr>
                     </tbody>
@@ -43,13 +39,10 @@ import Room from "./Room";
 
 export default {
     name: "Questions",
-    props: ["roomId"],
+    props: ["documentId"],
     data: function() {
         return {
-            identificator: "",
-            Room: null,
             socket: null,
-            question: "",
             questions: []
         };
     },
@@ -58,75 +51,22 @@ export default {
             let actions = localStorage.getItem("actions") || "{}";
             actions = JSON.parse(actions);
 
-            let keys = actions[this.Room._id]
-                ? Object.keys(actions[this.Room._id])
+            let keys = actions[this.documentId]
+                ? Object.keys(actions[this.documentId])
                 : [];
 
             return keys.indexOf(question) == -1;
         },
         vote(action, questionId) {
-            fetch(
-                `${process.env.ACTAS_NODE_SERVER}api/room/${this.Room._id}/questions/${questionId}/vote/${action}`,
-                {
-                    method: "POST"
-                }
-            )
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        this.storeLocalAction(
-                            this.Room._id,
-                            questionId,
-                            action
-                        );
-                        this.refreshQuestions();
-                        top.notification({
-                            type: "success",
-                            message: data.message
-                        });
-                    } else {
-                        top.notification({
-                            type: "error",
-                            message: data.message
-                        });
-                    }
-                });
-        },
-        refreshQuestions() {
-            this.socket.emit("refreshQuestions", this.Room._id);
-        },
-        defineRoom() {
-            fetch(`${process.env.ACTAS_NODE_SERVER}api/room/${this.roomId}`, {
-                method: "GET"
-            })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        this.Room = new Room(data.data);
-                        this.socket.emit("defineRoom", this.Room._id);
-                        this.refreshQuestions();
-                    } else {
-                        top.notification({
-                            type: "error",
-                            message: data.message
-                        });
-                    }
-                });
-        },
-        defineSocket() {
-            this.socket = io(process.env.ACTAS_NODE_SERVER + "room");
-
-            this.socket.on("refreshQuestions", questions => {
-                this.questions = questions;
+            this.socket.emit("vote", {
+                room: this.documentId + "-Manager",
+                question: questionId,
+                action: action
             });
-
-            this.defineRoom();
+            this.storeLocalAction(this.documentId, questionId, action);
         },
         storeLocalAction(room, question, action) {
+            console.log(question);
             let actions = localStorage.getItem("actions") || "{}";
             actions = JSON.parse(actions);
 
@@ -137,10 +77,22 @@ export default {
             actions[room][question] = action;
             actions = JSON.stringify(actions);
             localStorage.setItem("actions", actions);
+        },
+        createSocket() {
+            this.socket = io(process.env.ACTAS_NODE_SERVER + "meeting");
+
+            this.socket.on("refreshClient", data => {
+                this.questions = data;
+            });
+        },
+        syncData(documentId) {
+            this.socket.emit("defineRoom", documentId + "-QuestionViewer");
+            this.socket.emit("getData", documentId + "-Manager");
         }
     },
-    created: function() {
-        this.defineSocket();
+    mounted: function() {
+        this.createSocket();
+        this.syncData(this.documentId);
     }
 };
 </script>

@@ -24,7 +24,7 @@ include_once $rootPath . 'views/assets/librerias.php';
             </div>
         </div>
         <div class="col-auto">
-            <button class="btn btn-complete" id="send_question">Publicar</button>
+            <button class="btn btn-complete" id="send_question">Crear</button>
         </div>
     </div>
     <div class="row mx-0">
@@ -34,28 +34,19 @@ include_once $rootPath . 'views/assets/librerias.php';
     </div>
 </div>
 
-<?= socketIoClient() ?>
 <?= bootstrapTable() ?>
 <?= icons() ?>
 <script>
-    $(function () {
-        var remoteServer = "<?= ACTAS_NODE_SERVER ?>";
-        var room = top.window.actDocumentData.questions.room;
-        var questions = [];
-        var socket = null;
+    $(function() {
+        var questions = top.window.actDocumentData.questions.slice();
 
-        findRoom(room);
-
-        $("#btn_success").on("click", function () {
+        $("#btn_success").on("click", function() {
             top.successModalEvent({
-                questions: {
-                    room,
-                    items: questions
-                }
+                questions: questions
             });
         });
 
-        $("#send_question").on("click", function () {
+        $("#send_question").on("click", function() {
             let question = $("[name='question']").val();
 
             if (!question.length) {
@@ -65,32 +56,28 @@ include_once $rootPath . 'views/assets/librerias.php';
                 });
 
                 return;
+            } else {
+                $("[name='question']").val('');
             }
 
-            $.post(
-                `${remoteServer}api/room/${room}/questions/${question}`,
-                function (response) {
-                    if (response.success) {
-                        $("[name='question']").val('');
-                        socket.emit("refreshQuestions", room);
-                    } else {
-                        top.notification({
-                            type: 'error',
-                            message: response.message
-                        });
-                    }
-                },
-                'json'
-            );
+            questions.push({
+                label: question,
+                approve: 0,
+                reject: 0
+            });
+
+            $('#question_table').bootstrapTable('refreshOptions', {
+                data: questions,
+            })
         });
 
         $('#question_table').bootstrapTable({
             classes: 'table table-hover mt-0',
             theadClasses: 'thead-light',
             columns: [{
-                field: 'label',
-                title: 'Pregunta'
-            },
+                    field: 'label',
+                    title: 'Pregunta'
+                },
                 {
                     field: 'approve',
                     title: 'Aprobaciones'
@@ -102,31 +89,5 @@ include_once $rootPath . 'views/assets/librerias.php';
             ],
             data: questions
         });
-
-        function findRoom(room) {
-            $.get(`${remoteServer}api/room/${room}`, function (response) {
-                if (response.success) {
-                    $("#question_container").show();
-                    openSocket(response.data._id);
-                } else {
-                    console.error(response.message);
-                }
-            }, 'json');
-
-        }
-
-        function openSocket(room) {
-            socket = io(remoteServer + "room");
-
-            socket.on("refreshQuestions", items => {
-                questions = items;
-                $('#question_table').bootstrapTable('refreshOptions', {
-                    data: questions
-                });
-            });
-
-            socket.emit("defineRoom", room);
-            socket.emit("refreshQuestions", room);
-        }
     });
 </script>
