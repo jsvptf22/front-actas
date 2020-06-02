@@ -17,13 +17,13 @@
                     <div class="card-footer">
                         <button
                                 class="btn btn-complete float-right"
-                                v-on:click="openForm(item.id)"
+                                v-on:click="openForm(item.documentId)"
                         >
                             Iniciar
                         </button>
                         <button
                                 class="btn btn-success float-right mx-2"
-                                v-on:click="sendNotification(item.id)"
+                                v-on:click="sendNotification(item.documentId)"
                         >
                             Enviar recordatorio
                         </button>
@@ -62,14 +62,14 @@
                     "json"
                 );
             },
-            openForm(id) {
+            openForm(documentId) {
                 $.post(
                     `${process.env.ABSOLUTE_SAIA_ROUTE}app/formato/consulta_rutas.php`,
                     {
                         key: localStorage.getItem("key"),
                         token: localStorage.getItem("token"),
                         formatName: "acta",
-                        schedule: id
+                        documentId: documentId
                     },
                     function (response) {
                         if (response.success) {
@@ -86,13 +86,13 @@
                     "json"
                 );
             },
-            sendNotification(id) {
+            sendNotification(documentId) {
                 $.post(
                     `${process.env.ABSOLUTE_ACTAS_API_ROUTE}documento/enviar_enlace.php`,
                     {
                         key: localStorage.getItem('key'),
                         token: localStorage.getItem('token'),
-                        shedule: id
+                        documentId: documentId
                     },
                     (response) => {
                         if (response.success) {
