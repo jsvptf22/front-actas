@@ -8,25 +8,56 @@
         <div class="row">
             <div class="col-12" id="list" v-if="items.length">
                 <div class="card" v-for="item of items" v-bind:key="item.id">
-                    <div class="card-body">
-                        {{ item.label }}
+                    <div class="card-header bold">
+                        <h6 class="d-inline">{{ item.label }}</h6>
                         <span class="float-right text-master">{{
                             item.date
                         }}</span>
+                        <hr class="mb-0">
+                    </div>
+                    <div class="card-body">
+                        <div class="row mx-0 py-0" v-if="item.maker">
+                            <div class="col px-0">
+                                <span class="bold">Organizador</span>
+                                <p class="bg-master-lighter p-2 ml-3 my-1">
+                                    {{item.maker.name}}
+                                </p>
+                                <hr class="my-1">
+                            </div>
+                        </div>
+                        <div class="row mx-0 py-0" v-if="item.internalAssistants.length">
+                            <div class="col px-0">
+                                <span class="bold">Asistentes internos</span>
+                                <p class="bg-master-lighter p-2 ml-3 my-1" v-for="assistant of item.internalAssistants">
+                                    {{assistant.name}}
+                                </p>
+                                <hr class="my-1">
+                            </div>
+                        </div>
+                        <div class="row mx-0 py-0" v-if="item.externalAssistants.length">
+                            <div class="col px-0">
+                                <span class="bold">Asistentes externos</span>
+                                <p class="bg-master-lighter p-2 ml-3 my-1" v-for="assistant of item.externalAssistants">
+                                    {{assistant.name}}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
-                        <button
-                                class="btn btn-complete float-right"
+                        <span
+                                class="cursor float-right mx-2 f-20"
                                 v-on:click="openForm(item.documentId)"
+                                title="Iniciar reunión"
                         >
-                            Iniciar
-                        </button>
-                        <button
-                                class="btn btn-success float-right mx-2"
+                            <i class="fa fa-arrow-right"></i>
+                        </span>
+                        <span
+                                class="cursor float-right mx-2 f-20"
                                 v-on:click="sendNotification(item.documentId)"
+                                title="Enviar recordatorio"
                         >
-                            Enviar recordatorio
-                        </button>
+                            <i class="fa fa-share-alt"></i>
+                        </span>
                     </div>
                 </div>
             </div>

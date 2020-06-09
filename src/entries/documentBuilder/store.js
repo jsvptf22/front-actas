@@ -15,7 +15,6 @@ const store = new Vuex.Store({
             id: 0,
             documentId: 0,
             identificator: 0,
-            fk_agendamiento_act: 0,
             initialDate: moment().format('YYYY-MM-DD HH:mm:ss'),
             finalDate: '',
             subject: '',
@@ -36,7 +35,7 @@ const store = new Vuex.Store({
             state.params = data;
         },
         refreshDocumentInformation(state, data) {
-            top.window.actDocumentData = { ...data };
+            top.window.actDocumentData = {...data};
             state.documentInformation = data;
 
             if (data.documentId) {
@@ -104,7 +103,7 @@ const store = new Vuex.Store({
                     documentId: context.state.params.documentId,
                     schedule: context.state.params.schedule,
                 },
-                function(response) {
+                function (response) {
                     if (response.success) {
                         context.dispatch('updateSocket', response.data);
                     } else {
@@ -149,7 +148,7 @@ const store = new Vuex.Store({
                         key: localStorage.getItem('key'),
                         token: localStorage.getItem('token'),
                         documentId:
-                            context.state.documentInformation.documentId,
+                        context.state.documentInformation.documentId,
                         data,
                     },
                     (response) => {
@@ -196,7 +195,7 @@ const store = new Vuex.Store({
                 }
 
                 questions[index] = question;
-                context.dispatch('syncData', { questions });
+                context.dispatch('syncData', {questions});
             });
 
             context.commit('refreshSocket', socket);
@@ -204,4 +203,4 @@ const store = new Vuex.Store({
     },
 });
 
-export { store as default };
+export {store as default};
