@@ -9,6 +9,7 @@ module.exports = env => {
         entry: {
             documentBuilder: "./src/entries/documentBuilder/entry.js",
             schedule: "./src/entries/schedule/entry.js",
+            newActionSchedule: "./src/entries/schedule/newActionEntry.js",
             qr: "./src/entries/qr/entry.js"
         },
         output: {
@@ -72,6 +73,12 @@ module.exports = env => {
                 template: "./src/entries/schedule/template.html",
                 filename: "schedule/index.html",
                 chunks: ["schedule"],
+                hash: true
+            }),
+            new HtmlWebpackPlugin({
+                template: "./src/entries/schedule/template.html",
+                filename: "newActionSchedule/index.html",
+                chunks: ["newActionSchedule"],
                 hash: true
             }),
             new HtmlWebpackPlugin({
