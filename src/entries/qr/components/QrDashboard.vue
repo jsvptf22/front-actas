@@ -35,8 +35,9 @@
     </div>
 </template>
 <script>
-import { mapState } from "vuex";
-export default {
+    import {mapState} from "vuex";
+
+    export default {
     name: "QrDashboard",
     data: function() {
         return {
@@ -55,3 +56,12 @@ export default {
     }
 };
 </script>
+<style>
+    .nav-link{
+        background: white !important;
+    }
+    .nav-link.active{
+        background: #6a6a6a !important;
+        color: white !important;
+    }
+</style>

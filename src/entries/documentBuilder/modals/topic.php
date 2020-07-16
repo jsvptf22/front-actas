@@ -34,10 +34,10 @@ include_once $rootPath . 'views/assets/librerias.php';
 
 <script>
     $(function() {
-        var editor = null;
-        var app = new Vue({
+        let editor = null;
+        const app = new Vue({
             el: '#topic_container',
-            data: function() {
+            data: function () {
                 return {
                     topics: [],
                     value: null,
@@ -45,17 +45,18 @@ include_once $rootPath . 'views/assets/librerias.php';
                 };
             },
             watch: {
-                value: function(val) {
+                value: function (val) {
                     let topic = this.topics.find(
-                        i => i.id == val
+                        i => +i.id === +val
                     );
-                    this.description = topic ? topic.description : "";
+
+                    this.description = topic.description || "";
                     editor.setData(this.description);
                 },
-                description: function(val) {
-                    let index = this.topics.findIndex(i => i.id == this.value);
+                description: function (val) {
+                    let index = this.topics.findIndex(i => +i.id === +this.value);
 
-                    if (index == -1) {
+                    if (index === -1) {
                         index = this.topics.length;
                     }
 
@@ -70,7 +71,7 @@ include_once $rootPath . 'views/assets/librerias.php';
         });
 
         CKEDITOR.replace('description');
-        var editor = CKEDITOR.instances['description'];
+        editor = CKEDITOR.instances['description'];
         editor.on('key', function(evt) {
             setTimeout(() => app.description = editor.getData(), 0);
         });
@@ -85,7 +86,7 @@ include_once $rootPath . 'views/assets/librerias.php';
             data: convertOptions(),
         }).on('change', function(e) {
             app._data.value = $(this).val();
-        })
+        });
 
         function convertOptions() {
             let data = [{
@@ -98,7 +99,7 @@ include_once $rootPath . 'views/assets/librerias.php';
                     id: t.id,
                     text: t.label
                 });
-            })
+            });
 
             return data;
         }

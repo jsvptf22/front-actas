@@ -80,11 +80,13 @@ include_once $rootPath . 'views/assets/librerias.php';
                 },
                 {
                     field: 'approve',
-                    title: 'Aprobaciones'
+                    title: 'Aprobaciones',
+                    align: 'center'
                 },
                 {
                     field: 'reject',
-                    title: 'Rechazos'
+                    title: 'Rechazos',
+                    align: 'center'
                 }
             ],
             data: questions

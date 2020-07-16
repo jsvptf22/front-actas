@@ -76,11 +76,10 @@
     </div>
 </template>
 <script>
-import io from "socket.io-client";
-import { mapState } from "vuex";
-import Viewer from "./../qr/components/Viewer.vue";
+    import {mapState} from "vuex";
+    import Viewer from "./../qr/components/Viewer.vue";
 
-export default {
+    export default {
     name: "Editor",
     components: {
         Viewer
@@ -141,35 +140,27 @@ export default {
                 }
             });
         },
-        openTaskModal(taskId = null) {
+        openTaskModal() {
+            let documentId = this.documentInformation.documentId;
             top.topModal({
-                url: `views/tareas/crear.php`,
+                url: `views/tareas/lista_documento.php`,
                 params: {
-                    id: taskId
+                    documentId: documentId
                 },
-                centerAlign: false,
-                size: "modal-lg",
-                title: "Tarea o Recordatorio",
-                buttons: {},
-                onSuccess: data => {
-                    data = {
-                        id: data.id,
-                        name: data.name,
-                        managers: data.managers,
-                        limitDate: data.finalDate
-                    };
-                    let tasks = this.documentInformation.tasks;
-
-                    if (taskId) {
-                        let index = tasks.findIndex(t => t.id == data.id);
-                        tasks[index] = data;
-                    } else {
-                        tasks.push(data);
+                title: 'Tareas del documento',
+                size: 'modal-lg',
+                buttons: {
+                    cancel: {
+                        label: 'Cerrar',
+                        class: 'btn btn-danger'
+                    },
+                    success: {
+                        label: 'Crear tarea',
+                        class: 'btn btn-complete'
                     }
-
-                    this.$store.dispatch("syncData", {
-                        tasks: tasks
-                    });
+                },
+                onSuccess: () => {
+                    this.$store.dispatch("syncData", {});
                 }
             });
         },

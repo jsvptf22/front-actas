@@ -57,13 +57,11 @@ include_once $rootPath . 'views/assets/librerias.php';
 					};
 				},
 				processResults: function(response) {
-					if (!response.data.length) {
-						response.data = [{
-							id: 9999,
-							name: 'Crear tercero',
-							showModal: true
-						}]
-					}
+                    response.data.push({
+                        id: 9999,
+                        name: "Crear tercero",
+                        showModal: true
+                    });
 
 					return {
 						results: response.data.map(u => {

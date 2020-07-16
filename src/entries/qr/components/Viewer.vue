@@ -129,8 +129,8 @@
                             v-bind:key="index"
                         >
                             <td>{{ question.label }}</td>
-                            <td>{{ question.approve }}</td>
-                            <td>{{ question.reject }}</td>
+                            <td class="text-center">{{ question.approve }}</td>
+                            <td class="text-center">{{ question.reject }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -155,7 +155,6 @@
                                     <th class="text-center bold">Tarea</th>
                                     <th class="text-center bold">Responsable</th>
                                     <th class="text-center bold">Fecha límite</th>
-                                    <th class="text-center bold">Ver</th>
                                 </tr>
                                 <tr
                                     v-for="(task,index) of documentInformation.tasks"
@@ -164,11 +163,6 @@
                                     <td>{{task.name}}</td>
                                     <td>{{task.managers}}</td>
                                     <td>{{task.limitDate}}</td>
-                                    <td>
-                                        <button class="btn" v-on:click="openTaskModal(task.id)">
-                                            <span class="fa fa-eye"></span>
-                                        </button>
-                                    </td>
                                 </tr>
                             </table>
                         </td>
@@ -208,9 +202,9 @@
     </div>
 </template>
 <script>
-import io from "socket.io-client";
+    import io from "socket.io-client";
 
-export default {
+    export default {
     name: "Viewer",
     data: function() {
         return {

@@ -38,11 +38,11 @@ include_once $rootPath . 'views/assets/librerias.php';
     $(function () {
         let documentInformation = top.window.actDocumentData;
         $('#btn_success').on('click', function () {
+            let roles = top.window.actDocumentData.roles;
+            roles.secretary = $('#secretary_select').select2('data')[0];
+            roles.president = $('#president_select').select2('data')[0];
             top.successModalEvent({
-                roles: {
-                    secretary: $('#secretary_select').select2('data')[0],
-                    president: $('#president_select').select2('data')[0]
-                }
+                roles: roles
             })
         });
 
