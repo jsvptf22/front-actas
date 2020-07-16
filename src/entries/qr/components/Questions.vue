@@ -62,6 +62,11 @@
                 question: questionId,
                 action: action
             });
+            console.log( {
+                room: this.documentId + "-Manager",
+                question: questionId,
+                action: action
+            })
             this.storeLocalAction(this.documentId, questionId, action);
         },
         storeLocalAction(room, question, action) {

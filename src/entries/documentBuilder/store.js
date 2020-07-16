@@ -182,9 +182,10 @@ const store = new Vuex.Store({
             });
 
             socket.on('addVote', (data) => {
+                console.log(data)
                 let questions = context.state.documentInformation.questions;
                 let index = questions.findIndex(
-                    (q) => +q.idact_question == data.question
+                    (q) => +q.idact_question === +data.question
                 );
                 let question = questions[index];
 
