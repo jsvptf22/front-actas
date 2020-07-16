@@ -34,10 +34,9 @@
     </div>
 </template>
 <script>
-import io from "socket.io-client";
-import Room from "./Room";
+    import io from "socket.io-client";
 
-export default {
+    export default {
     name: "Questions",
     props: ["documentId"],
     data: function() {
@@ -66,7 +65,6 @@ export default {
             this.storeLocalAction(this.documentId, questionId, action);
         },
         storeLocalAction(room, question, action) {
-            console.log(question);
             let actions = localStorage.getItem("actions") || "{}";
             actions = JSON.parse(actions);
 
