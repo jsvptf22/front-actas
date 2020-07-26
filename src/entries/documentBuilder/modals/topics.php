@@ -49,7 +49,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 <?= vue() ?>
 <script>
 	$(function() {
-		var app = new Vue({
+		let app = new Vue({
 			el: '#topics_container',
 			data: function() {
 				return {
@@ -68,7 +68,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 					this.topicList.push(item);
 				},
 				remove(topicId) {
-					this.topicList = this.topicList.filter(t => t.id != topicId);
+					this.topicList = this.topicList.filter(t => +t.id !== +topicId);
 				}
 			},
 			created() {

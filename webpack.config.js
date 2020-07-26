@@ -18,7 +18,7 @@ module.exports = env => {
             filename: "[name]/[name].js"
         },
         resolve: {
-            modules: ["../../assets/node_modules/", "node_modules/"],
+            modules: ["../../node_modules/", "node_modules/"],
             alias: {
                 GlobalAssets: path.resolve(__dirname, "../../assets/")
             }
