@@ -182,19 +182,20 @@ const store = new Vuex.Store({
             });
 
             socket.on('addVote', (data) => {
-                console.log(data)
                 let questions = context.state.documentInformation.questions;
                 let index = questions.findIndex(
-                    (q) => +q.idact_question === +data.question
+                    (q) => +q.id === +data.question
                 );
                 let question = questions[index];
 
-                if (+data.action) {
-                    ++question.approve;
-                } else {
-                    ++question.reject;
-                }
+                question.options = question.options.map(o => {
+                    if (+o.id === +data.action) {
+                        o.votes = +o.votes + 1;
+                    }
 
+                    return o;
+                });
+                
                 questions[index] = question;
                 context.dispatch('syncData', {questions});
             });

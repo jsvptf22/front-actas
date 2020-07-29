@@ -99,7 +99,6 @@ include_once $rootPath . 'views/assets/librerias.php';
                 },
                 editQuestion(id) {
                     this.question = this.questions.find(q => q.id == id);
-                    console.log(this.question)
                 },
                 saveQuestion() {
                     if (!this.question.label.length) {

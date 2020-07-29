@@ -10,12 +10,12 @@
                         <td class="bold">Acta N°</td>
                         <td>{{ documentInformation.identificator }}</td>
                         <td
-                            v-if="this.documentInformation.qrUrl"
-                            rowspan="4"
-                            id="qr"
-                            class="text-center align-middle"
+                                v-if="this.documentInformation.qrUrl"
+                                rowspan="4"
+                                id="qr"
+                                class="text-center align-middle"
                         >
-                            <img :src="absoluteQrRoute" width="90" />
+                            <img :src="absoluteQrRoute" width="90"/>
                         </td>
                     </tr>
                     <tr>
@@ -51,7 +51,7 @@
                                     user.name
                                     }}
                                 </span>
-                                <br />
+                                <br/>
                             </div>
                         </td>
                     </tr>
@@ -64,7 +64,7 @@
                                     user.name
                                     }}
                                 </span>
-                                <br />
+                                <br/>
                             </div>
                         </td>
                     </tr>
@@ -81,9 +81,10 @@
                         <td>
                             <ul>
                                 <li
-                                    v-for="topic of documentInformation.topics"
-                                    v-bind:key="topic.id"
-                                >{{ topic.label }}</li>
+                                        v-for="topic of documentInformation.topics"
+                                        v-bind:key="topic.id"
+                                >{{ topic.label }}
+                                </li>
                             </ul>
                         </td>
                     </tr>
@@ -101,7 +102,7 @@
                             <ul>
                                 <li v-for="item of documentInformation.topics" v-bind:key="item.id">
                                     <span>{{item.label}}</span>
-                                    <br />
+                                    <br/>
                                     <p v-html="item.description"></p>
                                 </li>
                             </ul>
@@ -114,24 +115,24 @@
             <div class="col-12">
                 <table class="table table-bordered">
                     <thead>
-                        <tr>
-                            <td class="text-center bold" colspan="3">Decisiones</td>
-                        </tr>
+                    <tr>
+                        <td class="text-center bold" colspan="3">Decisiones</td>
+                    </tr>
                     </thead>
                     <tbody v-if="documentInformation.questions">
-                        <tr>
-                            <th class="text-center bold">Pregunta</th>
-                            <th class="text-center bold">Aprobación</th>
-                            <th class="text-center bold">Rechazo</th>
-                        </tr>
-                        <tr
+                    <tr>
+                        <th class="text-center bold">Pregunta</th>
+                        <th class="text-center bold">Resultados</th>
+                        <th class="text-center bold">#votantes</th>
+                    </tr>
+                    <tr
                             v-for="(question,index) of documentInformation.questions"
                             v-bind:key="index"
-                        >
-                            <td>{{ question.label }}</td>
-                            <td class="text-center">{{ question.approve }}</td>
-                            <td class="text-center">{{ question.reject }}</td>
-                        </tr>
+                    >
+                        <td>{{ question.label }}</td>
+                        <td class="text-center" v-html="getQuestionResumen(question)"></td>
+                        <th class="text-center">{{getTotalQuestionVotes(question)}}</th>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -145,11 +146,11 @@
                     <tr>
                         <td>
                             <table
-                                v-if="
+                                    v-if="
                                     documentInformation.tasks &&
                                     documentInformation.tasks.length
                                 "
-                                class="table"
+                                    class="table"
                             >
                                 <tr>
                                     <th class="text-center bold">Tarea</th>
@@ -157,8 +158,8 @@
                                     <th class="text-center bold">Fecha límite</th>
                                 </tr>
                                 <tr
-                                    v-for="(task,index) of documentInformation.tasks"
-                                    v-bind:key="index"
+                                        v-for="(task,index) of documentInformation.tasks"
+                                        v-bind:key="index"
                                 >
                                     <td>{{task.name}}</td>
                                     <td>{{task.managers}}</td>
@@ -177,7 +178,7 @@
                         <td>
                             <span class="bold">SECRETARIO:</span>
                             <span
-                                v-if="
+                                    v-if="
                                     documentInformation.roles && 
                                     documentInformation.roles.secretary
                                 "
@@ -186,7 +187,7 @@
                         <td>
                             <span class="bold">PRESIDENTE:</span>
                             <span
-                                v-if="
+                                    v-if="
                                     documentInformation.roles &&
                                     documentInformation.roles.president
                                 "
@@ -205,110 +206,132 @@
     import io from "socket.io-client";
 
     export default {
-    name: "Viewer",
-    data: function() {
-        return {
-            documentInformation: {},
-            socket: null,
-            userNames: []
-        };
-    },
-    props: ["documentId"],
-    methods: {
-        getAssistants() {
-            if (this.documentInformation.userList) {
-                var response = this.documentInformation.userList.filter(
-                    u => +u.external == 0
+        name: "Viewer",
+        data: function () {
+            return {
+                documentInformation: {},
+                socket: null,
+                userNames: []
+            };
+        },
+        props: ["documentId"],
+        methods: {
+            getAssistants() {
+                if (this.documentInformation.userList) {
+                    var response = this.documentInformation.userList.filter(
+                        u => +u.external === 0
+                    );
+                } else {
+                    var response = {};
+                }
+
+                return response;
+            },
+            getInvited() {
+                if (this.documentInformation.userList) {
+                    var response = this.documentInformation.userList.filter(
+                        u => +u.external === 1
+                    );
+                } else {
+                    var response = {};
+                }
+
+                return response;
+            },
+            getInitialDate() {
+                if (!this.documentInformation.initialDate) {
+                    return "";
+                }
+
+                let m = this.moment(
+                    this.documentInformation.initialDate,
+                    "YYYY-MM-DD HH:mm:ss"
                 );
-            } else {
-                var response = {};
-            }
+                return m.format("YYYY-MM-DD");
+            },
+            getInitialTime() {
+                if (!this.documentInformation.initialDate) {
+                    return "";
+                }
 
-            return response;
-        },
-        getInvited() {
-            if (this.documentInformation.userList) {
-                var response = this.documentInformation.userList.filter(
-                    u => +u.external == 1
+                let m = this.moment(
+                    this.documentInformation.initialDate,
+                    "YYYY-MM-DD HH:mm:ss"
                 );
-            } else {
-                var response = {};
+                return m.format("HH:mm:ss");
+            },
+            getFinaltime() {
+                if (!this.documentInformation.finalDate) {
+                    return "";
+                }
+
+                let m = this.moment(
+                    this.documentInformation.finalDate,
+                    "YYYY-MM-DD HH:mm:ss"
+                );
+                return m.format("HH:mm:ss");
+            },
+            getTotalQuestionVotes(question) {
+                let total = 0;
+                question.options.forEach(o => total += +o.votes);
+
+                return total;
+            },
+            getQuestionResumen(question) {
+                let total = this.getTotalQuestionVotes(question);
+                let resume = [];
+
+                question.options.forEach(o => {
+                    let percent = (o.votes * 100) / total;
+
+                    if (isNaN(percent)) {
+                        percent = 0;
+                    }
+
+                    resume.push(`${o.label} ${percent}%`);
+                });
+
+                return resume.join('<br>');
+            },
+            createSocket() {
+                this.socket = io(process.env.ACTAS_NODE_SERVER + "meeting");
+
+                this.socket.on("refreshClient", data => {
+                    this.documentInformation = data;
+                });
+            },
+            syncData(documentId) {
+                this.socket.emit("defineRoom", documentId + "-DocumentViewer");
+                this.socket.emit("getData", documentId + "-Manager");
             }
-
-            return response;
         },
-        getInitialDate() {
-            if (!this.documentInformation.initialDate) {
-                return "";
+        mounted: function () {
+            this.createSocket();
+            this.syncData(this.documentId);
+        },
+        watch: {
+            documentId: function (value) {
+                this.syncData(value);
             }
-
-            let m = this.moment(
-                this.documentInformation.initialDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("YYYY-MM-DD");
         },
-        getInitialTime() {
-            if (!this.documentInformation.initialDate) {
-                return "";
+        computed: {
+            absoluteQrRoute() {
+                return (
+                    process.env.ABSOLUTE_SAIA_ROUTE + this.documentInformation.qrUrl
+                );
             }
-
-            let m = this.moment(
-                this.documentInformation.initialDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("HH:mm:ss");
-        },
-        getFinaltime() {
-            if (!this.documentInformation.finalDate) {
-                return "";
-            }
-
-            let m = this.moment(
-                this.documentInformation.finalDate,
-                "YYYY-MM-DD HH:mm:ss"
-            );
-            return m.format("HH:mm:ss");
-        },
-        createSocket() {
-            this.socket = io(process.env.ACTAS_NODE_SERVER + "meeting");
-
-            this.socket.on("refreshClient", data => {
-                this.documentInformation = data;
-            });
-        },
-        syncData(documentId) {
-            this.socket.emit("defineRoom", documentId + "-DocumentViewer");
-            this.socket.emit("getData", documentId + "-Manager");
         }
-    },
-    mounted: function() {
-        this.createSocket();
-        this.syncData(this.documentId);
-    },
-    watch: {
-        documentId: function(value) {
-            this.syncData(value);
-        }
-    },
-    computed: {
-        absoluteQrRoute() {
-            return (
-                process.env.ABSOLUTE_SAIA_ROUTE + this.documentInformation.qrUrl
-            );
-        }
-    }
-};
+    };
 </script>
 <style>
-.template {
-    border: 1px solid #cacaca;
-    margin-bottom: 8px;
-    box-shadow: 2px 2px 8px #c6c6c6;
-}
+    .template {
+        border: 1px solid #cacaca;
+        margin-bottom: 8px;
+        box-shadow: 2px 2px 8px #c6c6c6;
+    }
 
-.template_parent {
-    height: 95vh;
-    overflow-y: auto;
-}
+    .template_parent {
+        height: 95vh;
+        overflow-y: auto;
+    }
 </style>
