@@ -16,16 +16,16 @@ include_once $rootPath . 'views/assets/librerias.php';
 
 ?>
 <div class="row" id="topic_container">
-    <div class="col-12">
-        <div class="form-group form-group-default form-group-default-select2">
-            <label>Listado de temas</label>
-            <select class="form-control" id="topic_list"></select>
-        </div>
-        <div class="form-group form-group-default">
-            <label for>DESARROLLO DEL TEMA</label>
-            <textarea rows="3" class="form-control" id="description" v-model="description"></textarea>
-        </div>
+  <div class="col-12">
+    <div class="form-group form-group-default form-group-default-select2">
+      <label>Listado de temas</label>
+      <select class="form-control" id="topic_list"></select>
     </div>
+    <div class="form-group form-group-default">
+      <label for>DESARROLLO DEL TEMA</label>
+      <textarea rows="3" class="form-control" id="description" v-model="description"></textarea>
+    </div>
+  </div>
 </div>
 
 <?= vue() ?>
@@ -33,7 +33,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 <?= select2() ?>
 
 <script>
-    $(function() {
+    $(function () {
         let editor = null;
         const app = new Vue({
             el: '#topic_container',
@@ -70,13 +70,17 @@ include_once $rootPath . 'views/assets/librerias.php';
             }
         });
 
-        CKEDITOR.replace('description');
+        CKEDITOR.replace('description', {
+            extraPlugins: 'contextmenu,justify',
+        });
         editor = CKEDITOR.instances['description'];
-        editor.on('key', function(evt) {
-            setTimeout(() => app.description = editor.getData(), 0);
+        editor.on('change', () => {
+            setTimeout(() => {
+                app.description = editor.getData();
+            }, 0);
         });
 
-        $('#btn_success').on('click', function() {
+        $('#btn_success').on('click', function () {
             top.successModalEvent({
                 topics: app._data.topics
             })
@@ -84,7 +88,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 
         $('#topic_list').select2({
             data: convertOptions(),
-        }).on('change', function(e) {
+        }).on('change', function (e) {
             app._data.value = $(this).val();
         });
 

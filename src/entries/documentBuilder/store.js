@@ -24,7 +24,7 @@ const store = new Vuex.Store({
             tasks: [],
             qrUrl: '',
             headers: {},
-            questions: {},
+            questions: [],
         },
     },
     mutations: {
@@ -195,7 +195,7 @@ const store = new Vuex.Store({
 
                     return o;
                 });
-                
+
                 questions[index] = question;
                 context.dispatch('syncData', {questions});
             });
