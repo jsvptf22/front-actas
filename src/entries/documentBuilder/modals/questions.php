@@ -3,7 +3,7 @@ $max_salida = 10;
 $rootPath = $ruta = '';
 
 while ($max_salida > 0) {
-    if (is_file($ruta . 'sw.js')) {
+    if (is_file($ruta . 'index.php')) {
         $rootPath = $ruta;
         break;
     }
@@ -16,56 +16,57 @@ include_once $rootPath . 'views/assets/librerias.php';
 
 ?>
 <div id="question_container">
-    <div class="row">
-        <div class="col-12">
-            <div class='form-group form-group-default'>
-                <label>Pregunta</label>
-                <textarea v-model="question.label" class="form-control" name="question"></textarea>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-12">
+      <div class='form-group form-group-default'>
+        <label>Pregunta</label>
+        <textarea v-model="question.label" class="form-control" name="question"></textarea>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-12" v-if="question.options.length">
-            <h6>Opciones</h6>
-            <div v-for="option of question.options" v-bind:key="option.id" class="card mb-1">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-auto f-20 d-flex align-items-center pr-1 mr-1">
-                            <i v-on:click="removeOption(option.id)" class="text-danger cursor fa fa-times"
-                               title="eliminar"></i>
-                        </div>
-                        <div class="col">
+  </div>
+  <div class="row">
+    <div class="col-12" v-if="question.options.length">
+      <h6>Opciones</h6>
+      <div v-for="option of question.options" v-bind:key="option.id" class="card mb-1">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-auto f-20 d-flex align-items-center pr-1 mr-1">
+              <i v-on:click="removeOption(option.id)" class="text-danger cursor fa fa-times"
+                 title="eliminar"></i>
+            </div>
+            <div class="col">
 							<span>
 								{{option.label}}
 							</span>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="input-group mb-3">
-                <input v-model="option.label" type="text" class="form-control" placeholder="Nueva opción"
-                       aria-describedby="button-addon2"/>
-                <div class="input-group-append">
-                    <button class="btn btn-secondary" type="button" v-on:click="saveOption">Crear Opción</button>
-                </div>
-            </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="input-group mb-3">
+        <input v-model="option.label" type="text" class="form-control" placeholder="Nueva opción"
+               aria-describedby="button-addon2"/>
+        <div class="input-group-append">
+          <button class="btn btn-secondary" type="button" v-on:click="saveOption">Crear Opción
+          </button>
         </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <button class="btn btn-complete btn-block" v-on:click="saveQuestion">Crear Decisión</button>
-            <hr>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-complete btn-block" v-on:click="saveQuestion">Crear Decisión</button>
+      <hr>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <table id="question_table"></table>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <table id="question_table"></table>
     </div>
+  </div>
 </div>
 
 <?= bootstrapTable() ?>
