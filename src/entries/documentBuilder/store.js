@@ -60,15 +60,15 @@ const store = new Vuex.Store({
                 let i = context.state.documentInformation;
 
                 try {
-                    if (!i.subject.length) {
+                    if (!i.subject || !i.subject.length) {
                         throw 'Debe indicar el asunto';
                     }
 
-                    if (!i.topics.length) {
+                    if (!i.topics || !i.topics.length) {
                         throw 'Debe indicar los temas a tratar';
                     }
 
-                    if (!i.userList.length) {
+                    if (!i.userList || !i.userList.length) {
                         throw 'Debe indicar los asistentes';
                     }
 

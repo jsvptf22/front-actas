@@ -25,13 +25,12 @@
           <tr>
             <td class="bold">Inicio</td>
             <td>
-              {{ getInitialDate() }}
-              {{ getInitialTime() }}
+              {{ documentInformation.initialDate }}
             </td>
           </tr>
           <tr>
             <td class="bold">Fin</td>
-            <td>{{ getFinaltime() }}</td>
+            <td>{{ documentInformation.finalDate }}</td>
           </tr>
         </table>
       </div>
@@ -254,39 +253,6 @@ export default {
       }
 
       return response;
-    },
-    getInitialDate() {
-      if (!this.documentInformation.initialDate) {
-        return "";
-      }
-
-      let m = this.moment(
-          this.documentInformation.initialDate,
-          "YYYY-MM-DD HH:mm:ss"
-      );
-      return m.format("YYYY-MM-DD");
-    },
-    getInitialTime() {
-      if (!this.documentInformation.initialDate) {
-        return "";
-      }
-
-      let m = this.moment(
-          this.documentInformation.initialDate,
-          "YYYY-MM-DD HH:mm:ss"
-      );
-      return m.format("HH:mm:ss");
-    },
-    getFinaltime() {
-      if (!this.documentInformation.finalDate) {
-        return "";
-      }
-
-      let m = this.moment(
-          this.documentInformation.finalDate,
-          "YYYY-MM-DD HH:mm:ss"
-      );
-      return m.format("HH:mm:ss");
     },
     getTotalQuestionVotes(question) {
       let total = 0;
