@@ -15,6 +15,7 @@ const store = new Vuex.Store({
             id: 0,
             documentId: 0,
             identificator: 0,
+            duration: 0,
             initialDate: moment().format('YYYY-MM-DD HH:mm:ss'),
             finalDate: '',
             subject: '',
