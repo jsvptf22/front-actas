@@ -9,7 +9,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         socket: null,
-        apiRoute: '',
+        apiHost: '',
         params: {},
         documentInformation: {
             id: 0,
@@ -29,8 +29,8 @@ const store = new Vuex.Store({
         },
     },
     mutations: {
-        generateApiRoute(state, baseUrl) {
-            state.apiRoute = process.env.ABSOLUTE_ACTAS_API_ROUTE;
+        defineApiHost(state) {
+            state.apiHost = process.env.ABSOLUTE_SAIA_ROUTE;
         },
         refreshParams(state, data) {
             state.params = data;
@@ -84,7 +84,7 @@ const store = new Vuex.Store({
             });
         },
         setRequest(context, data) {
-            context.commit('generateApiRoute');
+            context.commit('defineApiHost');
             context.commit('refreshParams', data);
             context.commit(
                 'refreshDocumentInformation',
@@ -97,7 +97,7 @@ const store = new Vuex.Store({
         },
         findDocumentInformation(context) {
             $.post(
-                `${context.state.apiRoute}documento/consulta_editor.php`,
+                `${context.state.apiHost}api/actas/document/findEditorData`,
                 {
                     key: localStorage.getItem('key'),
                     token: localStorage.getItem('token'),
@@ -125,7 +125,7 @@ const store = new Vuex.Store({
                 };
 
                 $.post(
-                    `${context.state.apiRoute}documento/guardar.php`,
+                    `${context.state.apiHost}api/actas/document/save`,
                     {
                         key: localStorage.getItem('key'),
                         token: localStorage.getItem('token'),
@@ -144,7 +144,7 @@ const store = new Vuex.Store({
         shareRoute(context, data) {
             return new Promise((resolve, reject) => {
                 $.post(
-                    `${context.state.apiRoute}documento/enviar_enlace.php`,
+                    `${context.state.apiHost}api/actas/document/sendLink`,
                     {
                         key: localStorage.getItem('key'),
                         token: localStorage.getItem('token'),

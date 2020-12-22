@@ -47,7 +47,7 @@ include_once $rootPath . 'views/assets/librerias.php';
             language: 'es',
             data: selectedUsers,
             ajax: {
-                url: `${realBaseUrl}app/modules/back_actas/app/funcionario/asistentes.php`,
+                url: `${realBaseUrl}api/actas/user/getAssistants`,
                 dataType: 'json',
                 data: function (params) {
                     return {
@@ -93,7 +93,7 @@ include_once $rootPath . 'views/assets/librerias.php';
 
         function findFieldData() {
             $.post(
-                `${realBaseUrl}app/modules/back_actas/app/formato/busca_campo.php`, {
+                `${realBaseUrl}api/actas/format/findField`, {
                     key: localStorage.getItem("key"),
                     token: localStorage.getItem("token"),
                     field: "asistentes_externos",

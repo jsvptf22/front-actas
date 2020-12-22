@@ -100,7 +100,7 @@
         methods: {
             findFieldData() {
                 $.post(
-                    `${process.env.ABSOLUTE_ACTAS_API_ROUTE}formato/busca_campo.php`,
+                    `${process.env.ABSOLUTE_SAIA_ROUTE}api/actas/format/findField`,
                     {
                         key: localStorage.getItem("key"),
                         token: localStorage.getItem("token"),
@@ -136,7 +136,7 @@
                     minimumInputLength: 3,
                     language: "es",
                     ajax: {
-                        url: `${process.env.ABSOLUTE_ACTAS_API_ROUTE}funcionario/asistentes.php`,
+                        url: `${process.env.ABSOLUTE_SAIA_ROUTE}api/actas/user/getAssistants`,
                         dataType: "json",
                         data: function (e) {
                             return {
@@ -224,7 +224,7 @@
                         });
 
                     $.post(
-                        `${process.env.ABSOLUTE_ACTAS_API_ROUTE}agendamiento/guardar.php`,
+                        `${process.env.ABSOLUTE_SAIA_ROUTE}api/actas/schedule/create`,
                         data,
                         response => {
                             if (response.success) {

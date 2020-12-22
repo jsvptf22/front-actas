@@ -75,7 +75,7 @@
         methods: {
             refreshList() {
                 $.post(
-                    `${process.env.ABSOLUTE_ACTAS_API_ROUTE}agendamiento/listar.php`,
+                    `${process.env.ABSOLUTE_SAIA_ROUTE}api/actas/schedule/list`,
                     {
                         key: localStorage.getItem("key"),
                         token: localStorage.getItem("token")
@@ -119,7 +119,7 @@
             },
             sendNotification(documentId) {
                 $.post(
-                    `${process.env.ABSOLUTE_ACTAS_API_ROUTE}documento/enviar_enlace.php`,
+                    `${process.env.ABSOLUTE_SAIA_ROUTE}api/actas/document/sendLink.php`,
                     {
                         key: localStorage.getItem('key'),
                         token: localStorage.getItem('token'),
